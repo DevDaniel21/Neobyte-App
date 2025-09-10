@@ -5,21 +5,21 @@ import {
     TextInput,
     Button,
     TouchableOpacity,
-} from "react-native";
-import { Image } from "expo-image";
-import { useState } from "react";
+} 
+from 'react-native';
+import { Image } from 'expo-image';
+import { useState } from 'react';
 
-export default function Register() {
-    const [email, setEmail] = useState("");
-    const [pass, setPass] = useState("");
+export default function App() {
+    const [email, setEmail] = useState('');
+    const [pass, setPass] = useState('');
 
     return (
         <View style={styles.container}>
-            <Image style={styles.logo} source={require("./assets/logo-branca.png")} />
-            <Text style={styles.titulo}>Cadastrar-se</Text>
+            <Image style={styles.logo} source={require('./assets/logo.png')} />
+            <Text style={styles.titulo}>Bem Vindo de Volta!</Text>
             <View style={styles.form}>
                 <View style={styles.data_container}>
-             
                     <Text style={styles.label}>Email</Text>
                     <TextInput
                         style={styles.input}
@@ -37,18 +37,19 @@ export default function Register() {
                 </View>
 
                 <View style={styles.button_container}>
-                   <TouchableOpacity style={styles.BtnCadastro} onPress="">
-                        <Text style={styles.BtnCadastroText}>
-                            Cadastrar
-                        </Text>
-                    </TouchableOpacity>
+                    <Button
+                        style={styles.button}
+                        color="tranparent"
+                        title="Entrar"
+                        onPress=""
+                    />
                 </View>
 
                 <View style={styles.linkCadastro_container}>
-                    <Text>Já possui uma conta?</Text>
+                    <Text>Não possui uma conta?</Text>
                     <TouchableOpacity style={styles.linkCadastro} onPress="">
                         <Text style={styles.linkCadastroText}>
-                            Clique aqui para entrar.
+                            Clique aqui para se cadastrar.
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -60,45 +61,44 @@ export default function Register() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#137969",
-        alignItems: "center",
-        justifyContent: "center",
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     logo: {
-        width: "38%",
-        height: "13%",
+        width: '38%',
+        height: '13%',
     },
     titulo: {
         fontSize: 26,
-        fontWeight: "900",
+        fontWeight: '900',
         marginBottom: 10,
-        color: "#ffffffff",
+        color: '#137969',
     },
     form: {
         flex: 0.65,
-        width: "85%",
-        alignItems: "center",
-        justifyContent: "center",
+        width: '85%',
+        alignItems: 'center',
+        justifyContent: 'center',
         gap: 20,
-        backgroundColor: "",
+        backgroundColor: '#137969',
         borderRadius: 10,
-        backgroundColor: "#ffffffff",
     },
     data_container: {
-        width: "85%",
+        width: '85%',
     },
     label: {
-        color: "#137969",
+        color: '#fff',
         fontSize: 20,
-        fontWeight: "700",
+        fontWeight: '700',
     },
     input: {
-        justifyContent: "center",
-        alignContent: "flex-start",
-        fontWeight: "700",
-        backgroundColor: "#137969",
-        color: "#ffffffff",   
-        width: "100%",
+        justifyContent: 'center',
+        alignContent: 'flex-start',
+        fontWeight: '700',
+        backgroundColor: '#fff',
+        color: '#137969',
+        width: '100%',
         fontSize: 12,
         paddingLeft: 15,
         paddingRight: 15,
@@ -108,30 +108,18 @@ const styles = StyleSheet.create({
     button_container: {
         borderRadius: 8,
         borderWidth: 2,
-        borderColor: "#137969",
-        width: "55%",
+        borderColor: '#fff',
+        width: '55%',
     },
     linkCadastro_container: {
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     linkCadastroText: {
-        color: "#137969",
+        color: '#ffffff',
         fontSize: 12,
-        fontWeight: "600",
-        textAlign: "center",
-        textDecorationLine: "underline",
-    },
-    BtnCadastro: {
-        backgroundColor: "#ffffffff",
-        color: "#137969",
-        alignItems: "center",
-        borderRadius: 8,
-    },
-
-    BtnCadastroText: {
-        color: "#137969",
-        fontWeight: "700",
-        fontSize: 22,  
+        fontWeight: '600',
+        textAlign: 'center',
+        textDecorationLine: 'underline',
     },
 });
