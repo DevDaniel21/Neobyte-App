@@ -5,18 +5,21 @@ import {
     TextInput,
     Button,
     TouchableOpacity,
-} 
-from 'react-native';
+} from 'react-native';
 import { Image } from 'expo-image';
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
 
 export default function App() {
+
+    const router = useRouter()
+
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
 
     return (
         <View style={styles.container}>
-            <Image style={styles.logo} source={require('./assets/logo.svg')} />
+            <Image style={styles.logo} source={require('../../assets/logo.svg')} />
             <Text style={styles.titulo}>Bem Vindo de Volta!</Text>
             <View style={styles.form}>
                 <View style={styles.data_container}>
@@ -41,13 +44,13 @@ export default function App() {
                         style={styles.button}
                         color="tranparent"
                         title="Entrar"
-                        onPress=""
+                        onPress={() => router.navigate('/home')}
                     />
                 </View>
 
                 <View style={styles.linkCadastro_container}>
                     <Text>Não possui uma conta?</Text>
-                    <TouchableOpacity style={styles.linkCadastro} onPress="">
+                    <TouchableOpacity onPress={() => router.push('/singup')}>
                         <Text style={styles.linkCadastroText}>
                             Clique aqui para se cadastrar.
                         </Text>
@@ -66,7 +69,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     logo: {
-        width: '38%',
+        width: '45%',
         height: '13%',
         objectFit: 'fit',
     },
