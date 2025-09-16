@@ -15,7 +15,7 @@ export default function Register() {
 
     return (
         <View style={styles.container}>
-            <Image style={styles.logo} source={require("./assets/logo-branca.png")} />
+            <Image style={styles.logo} source={require("./assets/logo-branca.svg")} />
             <Text style={styles.titulo}>Cadastrar-se</Text>
             <View style={styles.form}>
                 <View style={styles.data_container}>
@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     logo: {
         width: "38%",
         height: "13%",
+        objectFit: "fit",
     },
     titulo: {
         fontSize: 26,

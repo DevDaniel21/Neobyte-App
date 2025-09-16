@@ -16,7 +16,7 @@ export default function App() {
 
     return (
         <View style={styles.container}>
-            <Image style={styles.logo} source={require('./assets/logo.png')} />
+            <Image style={styles.logo} source={require('./assets/logo.svg')} />
             <Text style={styles.titulo}>Bem Vindo de Volta!</Text>
             <View style={styles.form}>
                 <View style={styles.data_container}>
@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     logo: {
         width: '38%',
         height: '13%',
+        objectFit: 'fit',
     },
     titulo: {
         fontSize: 26,
