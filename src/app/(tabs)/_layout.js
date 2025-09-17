@@ -1,5 +1,7 @@
 import { Tabs } from 'expo-router';
 import Foundation from '@expo/vector-icons/Foundation';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import Octicons from '@expo/vector-icons/Octicons';
 
 export default function RootLayout() {
     return (
@@ -18,7 +20,7 @@ export default function RootLayout() {
                     tabBarShowLabel: false,
                     headerShown: false,
                     tabBarIcon: ({ color }) => (
-                        <Foundation name="home" size={32} color={color} />
+                        <Foundation name="home" size={28} color={color} />
                     ),
                 }}
             />
@@ -28,7 +30,7 @@ export default function RootLayout() {
                     title: 'Favoritos',
                     tabBarShowLabel: false,
                     tabBarIcon: ({ color }) => (
-                        <Foundation name="heart" size={32} color={color} />
+                        <Foundation name="heart" size={28} color={color} />
                     ),
                 }}
             />
@@ -40,9 +42,29 @@ export default function RootLayout() {
                     tabBarIcon: ({ color }) => (
                         <Foundation
                             name="shopping-cart"
-                            size={32}
+                            size={28}
                             color={color}
                         />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="departaments"
+                options={{
+                    title: 'Departamentos',
+                    tabBarShowLabel: false,
+                    tabBarIcon: ({ color }) => (
+                        <Octicons name="stack" size={28} color={color} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="account"
+                options={{
+                    title: 'Minha Conta',
+                    tabBarShowLabel: false,
+                    tabBarIcon: ({ color }) => (
+                        <Ionicons name="person" size={28} color={color} />
                     ),
                 }}
             />

@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function Cart() {
+export default function Departaments() {
     return (
         <View style={styles.container}>
-            <Text>Carrinho</Text>
+            <Text>Departamentos</Text>
         </View>
     );
 }

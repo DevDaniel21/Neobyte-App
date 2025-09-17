@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function Cart() {
+export default function Account() {
     return (
         <View style={styles.container}>
-            <Text>Carrinho</Text>
+            <Text>Minha Conta</Text>
         </View>
     );
 }
