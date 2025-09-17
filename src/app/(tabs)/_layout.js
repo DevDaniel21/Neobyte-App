@@ -1,22 +1,21 @@
-import { Tabs } from 'expo-router';
-import Foundation from '@expo/vector-icons/Foundation';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import Octicons from '@expo/vector-icons/Octicons';
+import { Tabs } from "expo-router";
+import Foundation from "@expo/vector-icons/Foundation";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function RootLayout() {
     return (
         <Tabs
             screenOptions={{
-                tabBarActiveTintColor: '#137969',
-                tabBarInactiveTintColor: '#fff',
+                tabBarActiveTintColor: "#137969",
+                tabBarInactiveTintColor: "#fff",
                 tabBarLabelStyle: { fontSize: 8 },
-                tabBarStyle: { backgroundColor: '#000' },
+                tabBarStyle: { backgroundColor: "#000" },
             }}
         >
             <Tabs.Screen
                 name="home"
                 options={{
-                    title: 'Home',
+                    title: "Home",
                     tabBarShowLabel: false,
                     headerShown: false,
                     tabBarIcon: ({ color }) => (
@@ -27,7 +26,7 @@ export default function RootLayout() {
             <Tabs.Screen
                 name="favorites"
                 options={{
-                    title: 'Favoritos',
+                    title: "Favoritos",
                     tabBarShowLabel: false,
                     tabBarIcon: ({ color }) => (
                         <Foundation name="heart" size={28} color={color} />
@@ -37,7 +36,7 @@ export default function RootLayout() {
             <Tabs.Screen
                 name="cart"
                 options={{
-                    title: 'Carrinho',
+                    title: "Carrinho",
                     tabBarShowLabel: false,
                     tabBarIcon: ({ color }) => (
                         <Foundation
@@ -49,19 +48,23 @@ export default function RootLayout() {
                 }}
             />
             <Tabs.Screen
-                name="departaments"
+                name="search"
                 options={{
-                    title: 'Departamentos',
+                    title: "Procura",
                     tabBarShowLabel: false,
                     tabBarIcon: ({ color }) => (
-                        <Octicons name="stack" size={28} color={color} />
+                        <Foundation
+                            name="magnifying-glass"
+                            size={28}
+                            color={color}
+                        />
                     ),
                 }}
             />
             <Tabs.Screen
                 name="account"
                 options={{
-                    title: 'Minha Conta',
+                    title: "Minha Conta",
                     tabBarShowLabel: false,
                     tabBarIcon: ({ color }) => (
                         <Ionicons name="person" size={28} color={color} />
