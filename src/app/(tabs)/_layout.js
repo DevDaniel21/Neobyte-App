@@ -1,6 +1,7 @@
 import { Tabs } from "expo-router";
 import Foundation from "@expo/vector-icons/Foundation";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import Entypo from '@expo/vector-icons/Entypo';
 
 export default function RootLayout() {
     return (
@@ -48,16 +49,12 @@ export default function RootLayout() {
                 }}
             />
             <Tabs.Screen
-                name="search"
+                name="filter"
                 options={{
-                    title: "Procura",
+                    title: "Filtros",
                     tabBarShowLabel: false,
                     tabBarIcon: ({ color }) => (
-                        <Foundation
-                            name="magnifying-glass"
-                            size={28}
-                            color={color}
-                        />
+                      <Entypo name="wallet" size={28} color={color} />
                     ),
                 }}
             />
