@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from "react-native";
+import Header from '../components/Header'
 
 export default function Home() {
     return (
         <View style={styles.container}>
-            <Text>Home</Text>
+            <Header />
+            <Text style={styles.titulo}>Mais Pesquisados</Text>
         </View>
     );
 }
@@ -11,7 +13,17 @@ export default function Home() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        backgroundColor: "#212121",
     },
+
+    titulo: {
+        color: "#ffffff",
+        fontSize: 18,
+        fontWeight: "bold",
+        marginBottom: 20,
+        paddingHorizontal: 15,
+        marginTop: 10,
+    },
+
+    
 });

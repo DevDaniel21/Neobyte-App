@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function Search() {
+export default function Filter() {
     return (
         <View style={styles.container}>
-            <Text>Pagina de Pesquisa</Text>
+            <Text>Pagina de Filtros</Text>
         </View>
     );
 }
