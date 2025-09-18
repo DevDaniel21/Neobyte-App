@@ -1,6 +1,8 @@
 import { View, Text, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Foundation from '@expo/vector-icons/Foundation';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 export default function Account() {
     const user = { name: 'Usuário' };
@@ -16,9 +18,15 @@ export default function Account() {
 
             <View style={styles.links}>
                 <View style={styles.link_container}>
-                    <MaterialIcons name="person" size={40} color="#C5CBD1" />
+                    <View style={styles.icone}>
+                        <MaterialIcons
+                            name="person"
+                            size={40}
+                            color="#C5CBD1"
+                        />
+                    </View>
                     <TouchableOpacity style={styles.link_text_container}>
-                        <Text style={styles.link_text}>Meus Pedidos</Text>
+                        <Text style={styles.link_text}>Meus pedidos</Text>
                         <MaterialIcons
                             name="keyboard-arrow-right"
                             size={40}
@@ -27,9 +35,11 @@ export default function Account() {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.link_container}>
-                    <MaterialIcons name="person" size={40} color="#C5CBD1" />
+                    <View style={styles.icone}>
+                        <Foundation name="heart" size={40} color="#C5CBD1" />
+                    </View>
                     <TouchableOpacity style={styles.link_text_container}>
-                        <Text style={styles.link_text}>Meus Pedidos</Text>
+                        <Text style={styles.link_text}>Meus favoritos</Text>
                         <MaterialIcons
                             name="keyboard-arrow-right"
                             size={40}
@@ -38,9 +48,41 @@ export default function Account() {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.link_container}>
-                    <MaterialIcons name="person" size={40} color="#C5CBD1" />
+                    <View style={styles.icone}>
+                        <Ionicons name="cart" size={40} color="#C5CBD1" />
+                    </View>
                     <TouchableOpacity style={styles.link_text_container}>
-                        <Text style={styles.link_text}>Meus Pedidos</Text>
+                        <Text style={styles.link_text}>Meu carrinho</Text>
+                        <MaterialIcons
+                            name="keyboard-arrow-right"
+                            size={40}
+                            color="#C5CBD1"
+                        />
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.link_container}>
+                    <View style={styles.icone}>
+                        <FontAwesome5
+                            name="map-marker-alt"
+                            size={35}
+                            color="#C5CBD1"
+                        />
+                    </View>
+                    <TouchableOpacity style={styles.link_text_container}>
+                        <Text style={styles.link_text}>Meus endereços</Text>
+                        <MaterialIcons
+                            name="keyboard-arrow-right"
+                            size={40}
+                            color="#C5CBD1"
+                        />
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.link_container}>
+                    <View style={styles.icone}>
+                        <Ionicons name="clipboard" size={40} color={"#C5CBD1"} />
+                    </View>
+                    <TouchableOpacity style={styles.link_text_container}>
+                        <Text style={styles.link_text}>Meus endereços</Text>
                         <MaterialIcons
                             name="keyboard-arrow-right"
                             size={40}
@@ -78,13 +120,20 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         marginTop: 5,
     },
+    icone: {
+        width: 40,
+        height: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     links: {
         width: '100%',
         marginTop: 20,
-        gap: 15,
+        gap: 18,
     },
     link_container: {
         width: '100%',
+        height: 'auto',
         flexDirection: 'row',
         alignItems: 'center',
         gap: 10,

@@ -11,7 +11,7 @@ export default function RootLayout() {
                 tabBarInactiveTintColor: '#fff',
                 tabBarLabelStyle: { fontSize: 8 },
                 tabBarStyle: { backgroundColor: '#000', borderColor: '#000' },
-                headerStyle: { backgroundColor: '#000', borderColor: '#000' },
+                headerStyle: { backgroundColor: '#000', borderBottomWidth: 0 },
                 headerTitleStyle: { color: '#fff' },
             }}
         >
@@ -42,11 +42,7 @@ export default function RootLayout() {
                     title: 'Carrinho',
                     tabBarShowLabel: false,
                     tabBarIcon: ({ color }) => (
-                        <Foundation
-                            name="shopping-cart"
-                            size={28}
-                            color={color}
-                        />
+                        <Ionicons name="cart" size={28} color={color} />
                     ),
                 }}
             />
