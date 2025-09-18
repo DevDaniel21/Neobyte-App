@@ -3,7 +3,6 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 
 export default function Cart() {
-
     const router = useRouter();
 
     return (
@@ -18,7 +17,10 @@ export default function Cart() {
                     <Text style={styles.message_text}>
                         Seu carrinho está vazio
                     </Text>
-                    <TouchableOpacity style={styles.button} onPress={() => router.navigate('home')}>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => router.navigate('home')}
+                    >
                         <Ionicons name="bag" size={24} color="#fff" />
                         <Text style={styles.button_text}>
                             Começar a comprar
