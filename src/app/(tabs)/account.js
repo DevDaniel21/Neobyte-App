@@ -3,10 +3,11 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Foundation from '@expo/vector-icons/Foundation';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { useRouter } from 'expo-router';
 
 export default function Account() {
     const user = { name: 'Usuário' };
-
+    const router = useRouter();
     return (
         <View style={styles.container}>
             <View style={styles.message}>
@@ -26,33 +27,7 @@ export default function Account() {
                         />
                     </View>
                     <TouchableOpacity style={styles.link_text_container}>
-                        <Text style={styles.link_text}>Meus pedidos</Text>
-                        <MaterialIcons
-                            name="keyboard-arrow-right"
-                            size={40}
-                            color="#C5CBD1"
-                        />
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.link_container}>
-                    <View style={styles.icone}>
-                        <Foundation name="heart" size={40} color="#C5CBD1" />
-                    </View>
-                    <TouchableOpacity style={styles.link_text_container}>
-                        <Text style={styles.link_text}>Meus favoritos</Text>
-                        <MaterialIcons
-                            name="keyboard-arrow-right"
-                            size={40}
-                            color="#C5CBD1"
-                        />
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.link_container}>
-                    <View style={styles.icone}>
-                        <Ionicons name="cart" size={40} color="#C5CBD1" />
-                    </View>
-                    <TouchableOpacity style={styles.link_text_container}>
-                        <Text style={styles.link_text}>Meu carrinho</Text>
+                        <Text style={styles.link_text}>Meus dados</Text>
                         <MaterialIcons
                             name="keyboard-arrow-right"
                             size={40}
@@ -79,10 +54,14 @@ export default function Account() {
                 </View>
                 <View style={styles.link_container}>
                     <View style={styles.icone}>
-                        <Ionicons name="clipboard" size={40} color={"#C5CBD1"} />
+                        <Ionicons
+                            name="clipboard"
+                            size={40}
+                            color={'#C5CBD1'}
+                        />
                     </View>
                     <TouchableOpacity style={styles.link_text_container}>
-                        <Text style={styles.link_text}>Meus endereços</Text>
+                        <Text style={styles.link_text}>Meus pedidos</Text>
                         <MaterialIcons
                             name="keyboard-arrow-right"
                             size={40}
@@ -90,6 +69,11 @@ export default function Account() {
                         />
                     </TouchableOpacity>
                 </View>
+            </View>
+            <View style={{ position: 'absolute', bottom: 30, width: '100%', alignItems: 'center' }}>
+                <TouchableOpacity style={styles.exit_account} onPress={() => router.push('login')}>
+                    <Text style={styles.exit_text}>Sair da conta</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -149,4 +133,10 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: '500',
     },
+    exit_text: {
+        fontSize: 16,
+        fontWeight: '500',
+        color: '#FF3B30',
+        textAlign: 'center',
+    }
 });
