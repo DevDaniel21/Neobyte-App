@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from 'react-native';
-import CardFavorite from '../components/CardFavorite';
+import CardFavorite from '../../components/CardFavorite'
 import Foundation from '@expo/vector-icons/Foundation';
 
 export default function Favorites() {
