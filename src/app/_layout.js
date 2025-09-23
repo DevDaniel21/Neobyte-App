@@ -19,6 +19,10 @@ export default function Layout() {
                 name="cart"
                 options={{ title: 'Carrinho', headerShown: true }}
             />
+            <Stack.Screen
+                name="edituser"
+                options={{ title: 'Conta', headerShown: true }}
+            />
         </Stack>
     );
 }
