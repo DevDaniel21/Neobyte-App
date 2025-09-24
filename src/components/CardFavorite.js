@@ -9,7 +9,7 @@ export default function CardFavorite({ id, name, price, image }) {
                 <Image
                     style={styles.card_image}
                     contentFit="fill"
-                    source={image}
+                    source={image}  
                 />
             </View>
             <Text style={styles.card_name}>{name}</Text>
