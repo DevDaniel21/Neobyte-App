@@ -12,12 +12,23 @@ export default function Layout() {
                 name="singup"
                 options={{ title: 'Cadastrar', headerShown: false }}
             />
-            <Stack.Screen name="(tabs)"
-                options={{ headerShown: false }} 
-            />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen
                 name="cart"
                 options={{ title: 'Carrinho', headerShown: true }}
+            />
+            <Stack.Screen
+                name="edituser"
+                options={{
+                    title: 'Conta',
+                    headerTintColor: '#fff',
+                    headerShown: true,
+                    headerStyle: {
+                        backgroundColor: '#000',
+                        borderBottomColor: '#000',
+                        color: '#fff',
+                    },
+                }}
             />
         </Stack>
     );
