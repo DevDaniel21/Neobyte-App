@@ -47,16 +47,6 @@ export default function RootLayout() {
                 }}
             />
             <Tabs.Screen
-                name="filter"
-                options={{
-                    title: "Filtros",
-                    tabBarShowLabel: false,
-                    tabBarIcon: ({ color }) => (
-                      <Entypo name="wallet" size={28} color={color} />
-                    ),
-                }}
-            />
-            <Tabs.Screen
                 name="account"
                 options={{
                     title: "Minha Conta",

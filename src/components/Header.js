@@ -13,8 +13,8 @@ export default function Header() {
                     placeholder="Pesquisando o que te faz feliz..."
                     value={search}
                     onChangeText={(text) => setSearch(text)}
-                />{" "}
-                <Ionicons name="search" size={24} color="gray" />{" "}
+                />
+                <Ionicons name="search" size={24} color="gray" />
             </View>
         </View>
     );
