@@ -2,8 +2,8 @@ import { View, Text, StyleSheet } from 'react-native';
 import CardAdress from '../components/CardAdress';
 import Foundation from '@expo/vector-icons/Foundation';
 
-export default function Favorites() {
-    const favorites = [
+export default function Adress() {
+    const adresses = [
         {
             id: '1',
             name: 'Minha Casa',
@@ -42,8 +42,8 @@ export default function Favorites() {
                 <Text style={styles.title}>Meus Endereços</Text>
             </View>
 
-            <View style={styles.favorites}>
-                {favorites.map((favorite) => (
+            <View style={styles.adresses}>
+                {adresses.map((favorite) => (
                     <CardAdress
                         key={favorite.id}
                         id={favorite.id}
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: '700',
     },
-    favorites: {
+    adresses: {
         marginTop: 20,
         width: '100%',
         gap: 20,
