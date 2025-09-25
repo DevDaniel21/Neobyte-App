@@ -4,19 +4,19 @@ export default function Layout() {
     return (
         <Stack>
             <Stack.Screen name="index" options={{ headerShown: false }} />
+            
             <Stack.Screen
                 name="login"
                 options={{ title: 'Login', headerShown: false }}
             />
+            
             <Stack.Screen
                 name="singup"
                 options={{ title: 'Cadastrar', headerShown: false }}
             />
+            
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-                name="cart"
-                options={{ title: 'Carrinho', headerShown: true }}
-            />
+            
             <Stack.Screen
                 name="edituser"
                 options={{
@@ -26,7 +26,19 @@ export default function Layout() {
                     headerStyle: {
                         backgroundColor: '#000',
                         borderBottomColor: '#000',
-                        color: '#fff',
+                    },
+                }}
+            />
+            
+            <Stack.Screen
+                name="adress"
+                options={{
+                    title: 'Endereços',
+                    headerTintColor: '#fff',
+                    headerShown: true,
+                    headerStyle: {
+                        backgroundColor: '#000',
+                        borderBottomColor: '#000',
                     },
                 }}
             />

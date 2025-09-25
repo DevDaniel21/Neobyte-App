@@ -42,7 +42,7 @@ export default function Account() {
                             color="#C5CBD1"
                         />
                     </View>
-                    <TouchableOpacity style={styles.link_text_container}>
+                    <TouchableOpacity style={styles.link_text_container}  onPress={() => router.push('/adress')}>
                         <Text style={styles.link_text}>Meus endereços</Text>
                         <MaterialIcons
                             name="keyboard-arrow-right"
@@ -59,7 +59,7 @@ export default function Account() {
                             color={'#C5CBD1'}
                         />
                     </View>
-                    <TouchableOpacity style={styles.link_text_container}>
+                    <TouchableOpacity style={styles.link_text_container}  onPress={() => router.push('/edituser')}>
                         <Text style={styles.link_text}>Meus pedidos</Text>
                         <MaterialIcons
                             name="keyboard-arrow-right"
