@@ -29,7 +29,6 @@ export default function Layout() {
                     },
                 }}
             />
-
             <Stack.Screen
                 name="adress"
                 options={{

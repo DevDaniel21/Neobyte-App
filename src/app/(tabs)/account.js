@@ -1,7 +1,6 @@
 import { View, Text, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import Foundation from '@expo/vector-icons/Foundation';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRouter } from 'expo-router';
 
@@ -26,7 +25,7 @@ export default function Account() {
                             color="#C5CBD1"
                         />
                     </View>
-                    <TouchableOpacity style={styles.link_text_container}>
+                    <TouchableOpacity style={styles.link_text_container} onPress={() => router.push('/edituser')}>
                         <Text style={styles.link_text}>Meus dados</Text>
                         <MaterialIcons
                             name="keyboard-arrow-right"
@@ -43,7 +42,7 @@ export default function Account() {
                             color="#C5CBD1"
                         />
                     </View>
-                    <TouchableOpacity style={styles.link_text_container}>
+                    <TouchableOpacity style={styles.link_text_container}  onPress={() => router.push('/adress')}>
                         <Text style={styles.link_text}>Meus endereços</Text>
                         <MaterialIcons
                             name="keyboard-arrow-right"
@@ -61,6 +60,7 @@ export default function Account() {
                         />
                     </View>
                     <TouchableOpacity style={styles.link_text_container} onPress={() => router.push('/order')}>
+
                         <Text style={styles.link_text}>Meus pedidos</Text>
                         <MaterialIcons
                             name="keyboard-arrow-right"
