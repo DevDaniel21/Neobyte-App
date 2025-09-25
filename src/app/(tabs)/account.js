@@ -60,7 +60,7 @@ export default function Account() {
                             color={'#C5CBD1'}
                         />
                     </View>
-                    <TouchableOpacity style={styles.link_text_container}>
+                    <TouchableOpacity style={styles.link_text_container} onPress={() => router.push('/order')}>
                         <Text style={styles.link_text}>Meus pedidos</Text>
                         <MaterialIcons
                             name="keyboard-arrow-right"
