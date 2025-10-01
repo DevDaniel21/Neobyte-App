@@ -33,15 +33,15 @@ const styles = StyleSheet.create({
 
     card_container: {
         height: 218,
-        width: 180,
+        width: 148,
         backgroundColor: "#fff",
         borderRadius: 10,
         alignItems: 'center',
 
     },
     card_image: {
-        width: 100,
         height: 100,
+        width: 100,
         alignContent: 'center'
     },
     descricao_card: {
