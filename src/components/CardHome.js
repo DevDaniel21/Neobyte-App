@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
 
     card_container: {
         height: 218,
-        width: 148,
+        width: 138,
         backgroundColor: "#fff",
         borderRadius: 10,
         alignItems: 'center',
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
         alignContent: 'center'
     },
     descricao_card: {
-        fontSize: 13,
+        fontSize: 12,
         color: "black",
         marginTop: 15,
         fontWeight: '700',
