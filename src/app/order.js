@@ -8,7 +8,7 @@ export default function Order() {
     const orders = [
         {
             id: '1',
-            image: 'image',
+            image: 'https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/g/5/g5090-32v3c1.jpg',
             name: 'Placa de Video 5060',
             quantidade: '1',
             status: 'Em rota',

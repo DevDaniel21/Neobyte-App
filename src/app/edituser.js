@@ -84,7 +84,7 @@ export default function EditUser() {
                 />
             </View>
 
-            <Pressable onPress={() => router.navigate('login')}>
+            <Pressable onPress={() => router.navigate('index')}>
                 <Text style={styles.delete_text}>Exluir minha conta</Text>
             </Pressable>
 

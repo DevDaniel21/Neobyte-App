@@ -54,7 +54,7 @@ export default function Register() {
 
                 <View style={styles.linkCadastro_container}>
                     <Text>Já possui uma conta?</Text>
-                    <TouchableOpacity onPress={() => router.navigate('/login')}>
+                    <TouchableOpacity onPress={() => router.navigate('/index')}>
                         <Text style={styles.linkCadastroText}>
                             Clique aqui para entrar.
                         </Text>

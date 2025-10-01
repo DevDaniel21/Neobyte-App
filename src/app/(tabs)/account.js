@@ -71,7 +71,7 @@ export default function Account() {
                 </View>
             </View>
             <View style={{ position: 'absolute', bottom: 30, width: '100%', alignItems: 'center' }}>
-                <TouchableOpacity style={styles.exit_account} onPress={() => router.push('login')}>
+                <TouchableOpacity style={styles.exit_account} onPress={() => router.navigate('index')}>
                     <Text style={styles.exit_text}>Sair da conta</Text>
                 </TouchableOpacity>
             </View>
