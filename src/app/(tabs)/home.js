@@ -36,7 +36,8 @@ const styles = StyleSheet.create({
     },
     container_card: {
         paddingHorizontal: 10,
-        gap: 10,
+        rowGap: 10,
+        columnGap: 6,
         flexDirection: "row",
         flexWrap: "wrap",
     },
