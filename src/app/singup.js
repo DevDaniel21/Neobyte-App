@@ -4,19 +4,43 @@ import {
     View,
     TextInput,
     Button,
-    TouchableOpacity,
+    Pressable,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 
-
 export default function Register() {
-    
-    const router = useRouter()
+    const router = useRouter();
 
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
+
+    const handleSignup = async () => {
+        const profile = {
+            name,
+            email,
+            pass,
+        };
+
+        console.log(profile)
+
+        const response = await fetch('http://localhost:3000/user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(profile),
+        });
+
+        if (response.ok) {
+            console.log('Cadastrado com sucesso');
+            router.navigate('/home');
+        } else {
+            console.log('Erro ao cadastrar');
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -26,6 +50,14 @@ export default function Register() {
             />
             <Text style={styles.titulo}>Cadastrar-se</Text>
             <View style={styles.form}>
+                <View style={styles.data_container}>
+                    <Text style={styles.label}>Nome</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={name}
+                        onChangeText={setName}
+                    />
+                </View>
                 <View style={styles.data_container}>
                     <Text style={styles.label}>Email</Text>
                     <TextInput
@@ -44,21 +76,21 @@ export default function Register() {
                 </View>
 
                 <View style={styles.button_container}>
-                    <TouchableOpacity
+                    <Pressable
                         style={styles.BtnCadastro}
-                        onPress={() => router.navigate('/home')}
+                        onPress={handleSignup}
                     >
                         <Text style={styles.BtnCadastroText}>Cadastrar</Text>
-                    </TouchableOpacity>
+                    </Pressable>
                 </View>
 
                 <View style={styles.linkCadastro_container}>
                     <Text>Já possui uma conta?</Text>
-                    <TouchableOpacity onPress={() => router.navigate('/login')}>
+                    <Pressable onPress={() => router.navigate('/index')}>
                         <Text style={styles.linkCadastroText}>
                             Clique aqui para entrar.
                         </Text>
-                    </TouchableOpacity>
+                    </Pressable>
                 </View>
             </View>
         </View>
