@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
         alignContent: 'center'
     },
     descricao_card: {
-        fontSize: 12,
+        fontSize: 13,
         color: "black",
         marginTop: 15,
         fontWeight: '700',
