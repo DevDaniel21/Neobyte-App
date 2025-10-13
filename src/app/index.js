@@ -3,23 +3,38 @@ import {
     Text,
     View,
     TextInput,
-    Button,
     TouchableOpacity,
+    Pressable,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 
 export default function App() {
-
-    const router = useRouter()
+    const router = useRouter();
 
     const [email, setEmail] = useState('');
-    const [pass, setPass] = useState('');
+    const [senha, setSenha] = useState('');
+
+    const handleLogin = async () => {
+        const response = await fetch(`http://localhost:3000/user/${email}`);
+        const userData = await response.json();
+        const profile = userData.profile;
+        
+        if (profile.senha == senha) {
+            router.navigate('/home');
+        }
+        else {
+            console.error('Usuário não existe ou senha incorreta.')
+        }
+    };
 
     return (
         <View style={styles.container}>
-            <Image style={styles.logo} source={require('../../assets/logo.svg')} />
+            <Image
+                style={styles.logo}
+                source={require('../../assets/logo.svg')}
+            />
             <Text style={styles.titulo}>Bem Vindo de Volta!</Text>
             <View style={styles.form}>
                 <View style={styles.data_container}>
@@ -34,19 +49,14 @@ export default function App() {
                     <Text style={styles.label}>Senha</Text>
                     <TextInput
                         style={styles.input}
-                        value={pass}
-                        onChangeText={setPass}
+                        value={senha}
+                        onChangeText={setSenha}
                     />
                 </View>
 
-                <View style={styles.button_container}>
-                    <Button
-                        style={styles.button}
-                        color="tranparent"
-                        title="Entrar"
-                        onPress={() => router.navigate('/home')}
-                    />
-                </View>
+                <Pressable style={styles.BtnLogin} onPress={handleLogin}>
+                    <Text style={styles.BtnLoginText}>Entrar</Text>
+                </Pressable>
 
                 <View style={styles.linkCadastro_container}>
                     <Text>Não possui uma conta?</Text>
@@ -109,12 +119,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         borderRadius: 8,
     },
-    button_container: {
-        borderRadius: 8,
-        borderWidth: 2,
-        borderColor: '#fff',
-        width: '55%',
-    },
+    button_container: {},
     linkCadastro_container: {
         alignItems: 'center',
         justifyContent: 'center',
@@ -125,5 +130,21 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         textAlign: 'center',
         textDecorationLine: 'underline',
+    },
+    BtnLogin: {
+        width: '55%',
+        alignItems: 'center',
+        color: '#fff',
+        backgroundColor: '#137969',
+        borderColor: '#fff',
+        borderWidth: 2,
+        borderRadius: 8,
+        paddingVertical: 6,
+    },
+
+    BtnLoginText: {
+        color: '#fff',
+        fontWeight: '700',
+        fontSize: 22,
     },
 });

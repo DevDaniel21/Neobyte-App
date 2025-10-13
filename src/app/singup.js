@@ -3,7 +3,6 @@ import {
     Text,
     View,
     TextInput,
-    Button,
     Pressable,
 } from 'react-native';
 import { Image } from 'expo-image';
@@ -13,15 +12,15 @@ import { useRouter } from 'expo-router';
 export default function Register() {
     const router = useRouter();
 
-    const [name, setName] = useState('');
+    const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
-    const [pass, setPass] = useState('');
+    const [senha, setSenha] = useState('');
 
     const handleSignup = async () => {
         const profile = {
-            name,
+            nome,
             email,
-            pass,
+            senha,
         };
 
         console.log(profile)
@@ -54,8 +53,8 @@ export default function Register() {
                     <Text style={styles.label}>Nome</Text>
                     <TextInput
                         style={styles.input}
-                        value={name}
-                        onChangeText={setName}
+                        value={nome}
+                        onChangeText={setNome}
                     />
                 </View>
                 <View style={styles.data_container}>
@@ -70,8 +69,8 @@ export default function Register() {
                     <Text style={styles.label}>Senha</Text>
                     <TextInput
                         style={styles.input}
-                        value={pass}
-                        onChangeText={setPass}
+                        value={senha}
+                        onChangeText={setSenha}
                     />
                 </View>
 
