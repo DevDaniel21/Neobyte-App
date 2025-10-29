@@ -9,6 +9,7 @@ import {
 import { Image } from 'expo-image';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
+import  AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function App() {
     const router = useRouter();
@@ -17,12 +18,13 @@ export default function App() {
     const [senha, setSenha] = useState('');
 
     const handleLogin = async () => {
-        const response = await fetch(`http://localhost:3000/user/${email}`);
+        const response = await fetch(`http://localhost:3000/user/email/${email}`);
         const userData = await response.json();
         const profile = userData.profile;
         
         if (profile.senha == senha) {
             router.navigate('/home');
+            await AsyncStorage.setItem('logado', JSON.stringify(profile));
         }
         else {
             console.error('Usuário não existe ou senha incorreta.')
