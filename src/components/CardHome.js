@@ -1,58 +1,67 @@
-import { View, StyleSheet, Text, Pressable } from "react-native";
-import { Image } from "expo-image";
+import { View, StyleSheet, Text, Pressable } from 'react-native';
+import { Image } from 'expo-image';
+import { router } from 'expo-router';
 
-export default function CardHome() {
+export default function CardHome({ id, nome, valor, imagem }) {
+    id = 1;
+    nome =
+        'Placa de Video MSI GeForce RTX 5090 Ventus 3X OC, 32GB, GDDR7, 512-bit, G5090-32V3C.';
+    valor = '19.679,99';
+    imagem = 'https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/g/5/g5090-32v3c1.jpg';
+
+    const hadleProduct = async () => {
+        router.push({
+            pathname: '/product',
+            params: { id, nome, valor, imagem },
+        });
+    };
+
     return (
-        <View style={styles.container}>
-         <View style={styles.card_container}>
-            <Image
-                style={styles.card_image}
-                source="https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/g/5/g5090-32v3c1.jpg"
-            />
+        <Pressable onPress={hadleProduct}>
+            <View style={styles.container}>
+                <View style={styles.card_container}>
+                    <Image
+                        style={styles.card_image}
+                        source="https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/g/5/g5090-32v3c1.jpg"
+                    />
 
-            <Text style={styles.descricao_card}>
-                Placa de Video MSI GeForce RTX 5090 Ventus 3X OC, 32GB, GDDR7,
-                512-bit, G5090-32V3C.
-            </Text>
+                    <Text style={styles.descricao_card}>
+                        Placa de Video MSI GeForce RTX 5090 Ventus 3X OC, 32GB,
+                        GDDR7, 512-bit, G5090-32V3C.
+                    </Text>
 
-            <Text style={styles.descricao_preco}>
-                R$: 19.679,99.
-                </Text>
-        </View>
-    </View>
-
-    
+                    <Text style={styles.descricao_preco}>R$: 19.679,99.</Text>
+                </View>
+            </View>
+        </Pressable>
     );
 }
 
 const styles = StyleSheet.create({
-
     container: {
-        textAlign: "center",
+        textAlign: 'center',
     },
 
     card_container: {
         height: 218,
         width: 138,
-        backgroundColor: "#fff",
+        backgroundColor: '#fff',
         borderRadius: 10,
         alignItems: 'center',
-
     },
     card_image: {
         height: 100,
         width: 100,
-        alignContent: 'center'
+        alignContent: 'center',
     },
     descricao_card: {
         fontSize: 13,
-        color: "black",
+        color: 'black',
         marginTop: 15,
         fontWeight: '700',
-        textAlign: 'center'
-        
+        textAlign: 'center',
     },
     descricao_preco: {
-        color: "#137969"
+        color: '#137969',
     },
 });

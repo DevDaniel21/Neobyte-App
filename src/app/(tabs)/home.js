@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import { useImage, Image } from "expo-image";
+import { Image } from "expo-image";
 import Header from "../../components/Header";
 import CardHome from "../../components/CardHome";
 
