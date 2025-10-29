@@ -49,6 +49,19 @@ export default function Layout() {
                     },
                 }}
             />
+
+            <Stack.Screen
+                name="product"
+                options={{
+                    title: 'Produto',
+                    headerTintColor: '#fff',
+                    headerShown: true,
+                    headerStyle: {
+                        backgroundColor: '#000',
+                        borderBottomColor: '#000',
+                    },
+                }}
+            />
         </Stack>
     );
 }

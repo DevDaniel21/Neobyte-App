@@ -7,11 +7,12 @@ import {
     Pressable,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import  AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function EditUser() {
     const router = useRouter();
-
+    const [user, setUser] = useState(null);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
@@ -20,12 +21,23 @@ export default function EditUser() {
     const [tel, setTel] = useState('');
     const [cpf, setCpf] = useState('');
 
+    useEffect(() => {
+    const carregarUser = async () => {
+        const data = JSON.parse(localStorage.getItem('logado'));
+        if (data) {
+            setUser(data)
+            setName(data.nome)
+            setEmail(data.email)
+        };
+    };
+    carregarUser();
+    }, []);
+
     const handleEdit = async () => {
-        const user = {
+        const updatedUser = {
             name,
             email,
             pass,
-            avatar,
         };
 
         const response = await fetch(`http://localhost:3000/user/${id}`, {
@@ -33,12 +45,11 @@ export default function EditUser() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(user),
+            body: JSON.stringify(updatedUser),
         });
 
         if (response.ok) {
             console.log('Perfil editado com sucesso');
-            router.navigate('/contact');
         } else {
             console.log('Erro ao editar');
         }

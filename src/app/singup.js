@@ -8,6 +8,7 @@ import {
 import { Image } from 'expo-image';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
+import  AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function Register() {
     const router = useRouter();
@@ -32,10 +33,13 @@ export default function Register() {
             },
             body: JSON.stringify(profile),
         });
+        const userData = await response.json();
+        const newProfile = userData.profile;
 
         if (response.ok) {
             console.log('Cadastrado com sucesso');
             router.navigate('/home');
+            await AsyncStorage.setItem('logado', JSON.stringify(newProfile));
         } else {
             console.log('Erro ao cadastrar');
         }
