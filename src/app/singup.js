@@ -1,21 +1,15 @@
-import {
-    StyleSheet,
-    Text,
-    View,
-    TextInput,
-    Pressable,
-} from 'react-native';
-import { Image } from 'expo-image';
-import { useState } from 'react';
-import { useRouter } from 'expo-router';
-import  AsyncStorage from '@react-native-async-storage/async-storage'
+import { StyleSheet, Text, View, TextInput, Pressable } from "react-native";
+import { Image } from "expo-image";
+import { useState } from "react";
+import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Register() {
     const router = useRouter();
 
-    const [nome, setNome] = useState('');
-    const [email, setEmail] = useState('');
-    const [senha, setSenha] = useState('');
+    const [nome, setNome] = useState("");
+    const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
 
     const handleSignup = async () => {
         const profile = {
@@ -24,12 +18,12 @@ export default function Register() {
             senha,
         };
 
-        console.log(profile)
+        console.log(profile);
 
-        const response = await fetch('http://localhost:3000/user', {
-            method: 'POST',
+        const response = await fetch("http://localhost:3000/user", {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
             body: JSON.stringify(profile),
         });
@@ -37,21 +31,21 @@ export default function Register() {
         const newProfile = userData.profile;
 
         if (response.ok) {
-            console.log('Cadastrado com sucesso');
-            router.navigate('/home');
-            await AsyncStorage.setItem('logado', JSON.stringify(newProfile));
+            console.log("Cadastrado com sucesso");
+            router.navigate("/home");
+            await AsyncStorage.setItem("logado", JSON.stringify(newProfile));
         } else {
-            console.log('Erro ao cadastrar');
+            console.log("Erro ao cadastrar");
         }
     };
 
     return (
         <View style={styles.container}>
-            <Image
-                style={styles.logo}
-                source={require('../../assets/logo-branca.svg')}
-            />
-            <Text style={styles.titulo}>Cadastrar-se</Text>
+                <Image
+                    style={styles.logo}
+                    source={require("../../assets/logo-branca.svg")}
+                />
+                <Text style={styles.titulo}>Cadastrar-se</Text>
             <View style={styles.form}>
                 <View style={styles.data_container}>
                     <Text style={styles.label}>Nome</Text>
@@ -89,7 +83,7 @@ export default function Register() {
 
                 <View style={styles.linkCadastro_container}>
                     <Text>Já possui uma conta?</Text>
-                    <Pressable onPress={() => router.navigate('/index')}>
+                    <Pressable onPress={() => router.navigate("/")}>
                         <Text style={styles.linkCadastroText}>
                             Clique aqui para entrar.
                         </Text>
@@ -103,46 +97,47 @@ export default function Register() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#137969',
-        alignItems: 'center',
-        justifyContent: 'center',
+        backgroundColor: "#137969",
+        alignItems: "center",
+        justifyContent: "center",
     },
+
     logo: {
-        width: '45%',
-        height: '13%',
-        objectFit: 'fit',
+        width: "45%",
+        height: "13%",
+        resizeMode: "contain",
     },
     titulo: {
-        fontSize: 26,
-        fontWeight: '900',
+        fontSize: 32,
+        fontWeight: "900",
         marginBottom: 10,
-        color: '#ffffffff',
+        color: "#ffffffff",
     },
     form: {
         flex: 0.65,
-        width: '85%',
-        alignItems: 'center',
-        justifyContent: 'center',
+        width: "85%",
+        alignItems: "center",
+        justifyContent: "center",
         gap: 20,
-        backgroundColor: '',
+        backgroundColor: "",
         borderRadius: 10,
-        backgroundColor: '#ffffffff',
+        backgroundColor: "#ffffffff",
     },
     data_container: {
-        width: '85%',
+        width: "85%",
     },
     label: {
-        color: '#137969',
+        color: "#137969",
         fontSize: 20,
-        fontWeight: '700',
+        fontWeight: "700",
     },
     input: {
-        justifyContent: 'center',
-        alignContent: 'flex-start',
-        fontWeight: '700',
-        backgroundColor: '#137969',
-        color: '#ffffffff',
-        width: '100%',
+        justifyContent: "center",
+        alignContent: "flex-start",
+        fontWeight: "700",
+        backgroundColor: "#137969",
+        color: "#ffffffff",
+        width: "100%",
         fontSize: 12,
         paddingLeft: 15,
         paddingRight: 15,
@@ -150,31 +145,35 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     button_container: {
+        alignItems: 'center',
         borderRadius: 8,
         borderWidth: 2,
-        borderColor: '#137969',
-        width: '55%',
+        borderColor: "#137969",
+        width: "55%",
     },
     linkCadastro_container: {
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: "center",
+        justifyContent: "center",
     },
     linkCadastroText: {
-        color: '#137969',
+        color: "#137969",
         fontSize: 12,
-        fontWeight: '600',
-        textAlign: 'center',
-        textDecorationLine: 'underline',
+        fontWeight: "600",
+        textAlign: "center",
+        textDecorationLine: "underline",
     },
     BtnCadastro: {
-        backgroundColor: '#ffffffff',
-        color: '#137969',
+        width: '65%',
         alignItems: 'center',
+        color: '#fff',
+        borderColor: '#fff',
+        borderWidth: 2,
         borderRadius: 8,
+        paddingVertical: 6,
     },
 
     BtnCadastroText: {
-        color: '#137969',
+         color: '#137969',
         fontWeight: '700',
         fontSize: 22,
     },

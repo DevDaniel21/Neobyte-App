@@ -5,6 +5,7 @@ import {
     TextInput,
     TouchableOpacity,
     Pressable,
+    Alert,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { useState } from 'react';
@@ -18,16 +19,19 @@ export default function App() {
     const [senha, setSenha] = useState('');
 
     const handleLogin = async () => {
-        const response = await fetch(`http://localhost:3000/user/email/${email}`);
+        const response = await fetch(`http://localhost:3000/user/${email}`);
         const userData = await response.json();
         const profile = userData.profile;
-        
-        if (profile.senha == senha) {
-            router.navigate('/home');
-            await AsyncStorage.setItem('logado', JSON.stringify(profile));
-        }
-        else {
-            console.error('Usuário não existe ou senha incorreta.')
+        if (email == "" ) {
+            console.log('email nao digitada');
+        } else {
+            if (profile.senha == senha) {
+                router.navigate('/home');
+                await AsyncStorage.setItem('logado', JSON.stringify(profile));
+            }
+            else {
+                console.error('Usuário não existe ou senha incorreta.')
+            }
         }
     };
 
@@ -39,7 +43,7 @@ export default function App() {
             />
             <Text style={styles.titulo}>Bem Vindo de Volta!</Text>
             <View style={styles.form}>
-                <View style={styles.data_container}>
+                <View style={styles.primeiraInfo}>
                     <Text style={styles.label}>Email</Text>
                     <TextInput
                         style={styles.input}
@@ -61,7 +65,7 @@ export default function App() {
                 </Pressable>
 
                 <View style={styles.linkCadastro_container}>
-                    <Text>Não possui uma conta?</Text>
+                    <Text style={styles.cadastroText}>Não possui uma conta?</Text>
                     <TouchableOpacity onPress={() => router.push('/singup')}>
                         <Text style={styles.linkCadastroText}>
                             Clique aqui para se cadastrar.
@@ -83,23 +87,28 @@ const styles = StyleSheet.create({
     logo: {
         width: '45%',
         height: '13%',
-        objectFit: 'fit',
+        resizeMode: 'contain',
     },
     titulo: {
-        fontSize: 26,
+        fontSize: 32,
         fontWeight: '900',
         marginBottom: 10,
         color: '#137969',
     },
     form: {
-        flex: 0.65,
+        flex: 0.55,
         width: '85%',
         alignItems: 'center',
-        justifyContent: 'center',
         gap: 20,
         backgroundColor: '#137969',
         borderRadius: 10,
     },
+
+    primeiraInfo: {
+        marginTop: 60,
+        width: '85%',
+    },
+    
     data_container: {
         width: '85%',
     },
@@ -121,14 +130,19 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         borderRadius: 8,
     },
-    button_container: {},
+
     linkCadastro_container: {
         alignItems: 'center',
         justifyContent: 'center',
     },
+
+    cadastroText: {
+        fontSize:16
+    },
+
     linkCadastroText: {
         color: '#ffffff',
-        fontSize: 12,
+        fontSize: 18,
         fontWeight: '600',
         textAlign: 'center',
         textDecorationLine: 'underline',
