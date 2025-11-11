@@ -1,118 +1,320 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { useRouter, useGlobalSearchParams } from 'expo-router';
 import { Image } from 'expo-image';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useState } from 'react';
 
-export default function Home() {
+export default function ProductDetails() {
     const router = useRouter();
-    const { id, nome, valor, imagem } = useGlobalSearchParams();
+    const params = useGlobalSearchParams();
     
-    const [useFavorite, setFavorite] = useState("heart-o");
+    const [favorited, setFavorited] = useState(false);
 
-    function handleFavorite() {
-        if (useFavorite === "heart-o") {
-            setFavorite("heart");
-        } else {
-            setFavorite("heart-o");
-        }
-    }
+    const productData = {
+        id: params.id,
+        name: params.nome || 'Produto sem nome',
+        price: params.valor || '0.00',
+        image: params.imagem,
+    };
+
+    const toggleFavorite = () => setFavorited(prev => !prev);
+
+    const handleBuy = () => {
+        console.log('Comprando produto:', productData.id);
+        // Adicionar lógica de compra
+    };
+
+    const handleAddToCart = () => {
+        console.log('Adicionando ao carrinho:', productData.id);
+        // Adicionar lógica do carrinho
+    };
+
+    const renderStars = (rating = 3, total = 5) => {
+        return Array.from({ length: total }, (_, index) => (
+            <FontAwesome
+                key={index}
+                name={index < rating ? "star" : "star-o"}
+                size={20}
+                color="#FFD700"
+            />
+        ));
+    };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.product_rating_favorite}>
-                <View style={styles.stars_container}>
-                    <FontAwesome name="star" size={24} color="gold" />
-                    <FontAwesome name="star" size={24} color="gold" />
-                    <FontAwesome name="star" size={24} color="gold" />
-                    <FontAwesome name="star-o" size={24} color="gold" />
-                    <FontAwesome name="star-o" size={24} color="gold" />
+        <ScrollView style={styles.container}>
+            {/* Imagem do produto com botão de favorito */}
+            <View style={styles.imageContainer}>
+                <Image
+                    style={styles.productImage}
+                    source={{ uri: productData.image }}
+                    contentFit="cover"
+                    transition={300}
+                />
+                <Pressable onPress={toggleFavorite} style={styles.favoriteButton}>
+                    <FontAwesome
+                        name={favorited ? "heart" : "heart-o"}
+                        size={28}
+                        color={favorited ? "#FF4444" : "#fff"}
+                    />
+                </Pressable>
+            </View>
+
+            {/* Informações do produto */}
+            <View style={styles.infoSection}>
+                <Text style={styles.productName}>{productData.name}</Text>
+                
+                {/* Avaliação com estrelas */}
+                <View style={styles.ratingSection}>
+                    <View style={styles.starsRow}>
+                        {renderStars(3, 5)}
+                    </View>
+                    <Text style={styles.reviewCount}>(200 avaliações)</Text>
                 </View>
-                <Text style={styles.product_rating_total}>(200)</Text>
-                <Pressable onPress={handleFavorite}>
-                    <FontAwesome name={useFavorite} size={36} color="#C30D0D" />
-                </Pressable>
-            </View>
-            <Text style={styles.nome}>Nome:{nome}</Text>
-            
-            <Image style={styles.product_image} source={imagem} />
-            
-            <View style={styles.buy_container}>
-                <Text style={styles.valor}>R$ {valor}</Text>
-                <Pressable style={styles.buy_button}>
-                    <Text style={styles.buy_button_text}>Comprar</Text>
-                </Pressable>
-                <Pressable style={styles.buy_button}>
-                    <Text style={styles.buy_button_text}>
-                        Adicionar ao carrinho
+
+                <View style={styles.priceSection}>
+                    <Text style={styles.priceLabel}>Preço:</Text>
+                    <Text style={styles.priceValue}>
+                        R$ {parseFloat(productData.price).toFixed(2).replace('.', ',')}
                     </Text>
-                </Pressable>
+                </View>
+
+                {/* Descrição do produto */}
+                <View style={styles.descriptionSection}>
+                    <Text style={styles.sectionTitle}>Descrição</Text>
+                    <Text style={styles.descriptionText}>
+                        Este produto oferece excelente qualidade e durabilidade. 
+                        Perfeito para uso diário, combina funcionalidade com design moderno. 
+                        Fabricado com materiais de alta qualidade que garantem longa vida útil.
+                    </Text>
+                </View>
+
+                {/* Características */}
+                <View style={styles.featuresSection}>
+                    <Text style={styles.sectionTitle}>Características</Text>
+                    <View style={styles.featureItem}>
+                        <FontAwesome name="check-circle" size={18} color="#137969" />
+                        <Text style={styles.featureText}>Material de alta qualidade</Text>
+                    </View>
+                    <View style={styles.featureItem}>
+                        <FontAwesome name="check-circle" size={18} color="#137969" />
+                        <Text style={styles.featureText}>Garantia de 12 meses</Text>
+                    </View>
+                    <View style={styles.featureItem}>
+                        <FontAwesome name="check-circle" size={18} color="#137969" />
+                        <Text style={styles.featureText}>Entrega rápida e segura</Text>
+                    </View>
+                    <View style={styles.featureItem}>
+                        <FontAwesome name="check-circle" size={18} color="#137969" />
+                        <Text style={styles.featureText}>Fácil manutenção</Text>
+                    </View>
+                </View>
+
+                {/* Comentários */}
+                <View style={styles.commentsSection}>
+                    <Text style={styles.sectionTitle}>Comentários</Text>
+                    
+                    <View style={styles.commentCard}>
+                        <Text style={styles.commentName}>João Silva</Text>
+                        <Text style={styles.commentText}>
+                            Produto excelente! Superou minhas expectativas. A qualidade é muito boa e chegou rápido.
+                        </Text>
+                    </View>
+
+                    <View style={styles.commentCard}>
+                        <Text style={styles.commentName}>Maria Santos</Text>
+                        <Text style={styles.commentText}>
+                            Adorei a compra! Muito bonito e funcional. Recomendo para todos.
+                        </Text>
+                    </View>
+
+                    <View style={styles.commentCard}>
+                        <Text style={styles.commentName}>Carlos Oliveira</Text>
+                        <Text style={styles.commentText}>
+                            Ótimo custo-benefício. Produto de qualidade por um preço justo. Voltaria a comprar.
+                        </Text>
+                    </View>
+                </View>
+
+                {/* Botões de ação */}
+                <View style={styles.actionsContainer}>
+                    <Pressable
+                        style={[styles.actionButton, styles.buyButton]}
+                        onPress={handleBuy}
+                        android_ripple={{ color: '#0d5f52' }}
+                    >
+                        <FontAwesome name="shopping-bag" size={20} color="#fff" />
+                        <Text style={styles.buttonText}>Comprar Agora</Text>
+                    </Pressable>
+
+                    <Pressable
+                        style={[styles.actionButton, styles.cartButton]}
+                        onPress={handleAddToCart}
+                        android_ripple={{ color: '#555' }}
+                    >
+                        <FontAwesome name="cart-plus" size={20} color="#fff" />
+                        <Text style={styles.buttonText}>Adicionar ao Carrinho</Text>
+                    </Pressable>
+                </View>
             </View>
-        </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#212121',
+        backgroundColor: '#1a1a1a',
     },
-    text: {
-        color: '#fff',
-    },
-    product_image: {
-        height: 300,
+    imageContainer: {
         width: '100%',
-        alignContent: 'center',
-        marginTop: 20,
-    },
-    product_rating_favorite: {
-        justifyContent: 'flex-end',
+        height: 350,
+        backgroundColor: '#2a2a2a',
+        justifyContent: 'center',
         alignItems: 'center',
-        flexDirection: 'row',
+        position: 'relative',
+    },
+    productImage: {
         width: '100%',
-        paddingHorizontal: 10,
-        paddingTop: 10,
-        gap: 6,
+        height: '100%',
     },
-    product_rating_total: {
-        fontSize: 20,
-        color: 'white',
+    favoriteButton: {
+        position: 'absolute',
+        top: 16,
+        right: 16,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        padding: 10,
+        borderRadius: 50,
+        zIndex: 10,
     },
-    stars_container: {
-        flexDirection: 'row',
-    },
-    nome: {
-        fontSize: 18,
-        color: 'white',
-        fontWeight: '600',
-        textAlign: 'justify',
-        paddingHorizontal: 16,
-    },
-    buy_container: {
+    infoSection: {
         backgroundColor: '#fff',
-        height: 300,
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-        gap: 10,
-        marginTop: 20
+        borderTopLeftRadius: 24,
+        borderTopRightRadius: 24,
+        marginTop: -20,
+        paddingHorizontal: 20,
+        paddingTop: 24,
+        paddingBottom: 32,
+        minHeight: 300,
     },
-    valor: {
+    productName: {
+        fontSize: 24,
+        fontWeight: '700',
+        color: '#222',
+        marginBottom: 12,
+        lineHeight: 32,
+    },
+    ratingSection: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+        marginBottom: 20,
+        paddingBottom: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: '#1a1a1a',
+    },
+    starsRow: {
+        flexDirection: 'row',
+        gap: 4,
+    },
+    reviewCount: {
+        fontSize: 14,
+        color: '#666',
+        marginLeft: 4,
+    },
+    priceSection: {
+        flexDirection: 'row',
+        alignItems: 'baseline',
+        marginBottom: 24,
+        gap: 8,
+    },
+    priceLabel: {
+        fontSize: 16,
+        color: '#666',
+        fontWeight: '500',
+    },
+    priceValue: {
+        fontSize: 32,
+        fontWeight: '800',
         color: '#137969',
-        fontSize: 26,
-        fontWeight: 700
     },
-    buy_button: {
-        width: '100%',
-        backgroundColor: '#137969',
+    descriptionSection: {
+        marginBottom: 24,
+        paddingBottom: 24,
+        borderBottomWidth: 1,
+        borderBottomColor: '#e0e0e0',
+    },
+    sectionTitle: {
+        fontSize: 20,
+        fontWeight: '700',
+        color: '#222',
+        marginBottom: 12,
+    },
+    descriptionText: {
+        fontSize: 15,
+        color: '#555',
+        lineHeight: 24,
+    },
+    featuresSection: {
+        marginBottom: 24,
+    },
+    featureItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+        marginBottom: 12,
+    },
+    featureText: {
+        fontSize: 15,
+        color: '#555',
+        flex: 1,
+    },
+    commentsSection: {
+        marginBottom: 24,
+    },
+    commentCard: {
+        backgroundColor: '#f9f9f9',
+        padding: 16,
+        borderRadius: 12,
+        marginBottom: 12,
+        borderLeftWidth: 3,
+        borderLeftColor: '#137969',
+    },
+    commentHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+        marginBottom: 10,
+    },
+    commentName: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#222',
+    },
+    commentText: {
+        fontSize: 14,
+        color: '#555',
+        lineHeight: 20,
+    },
+    actionsContainer: {
+        gap: 12,
+    },
+    actionButton: {
+        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: 10,
-        borderRadius: 8
+        paddingVertical: 14,
+        borderRadius: 12,
+        gap: 10,
     },
-    buy_button_text: {
+    buyButton: {
+        backgroundColor: '#137969',
+    },
+    cartButton: {
+        backgroundColor: '#444',
+    },
+    buttonText: {
         color: '#fff',
-        fontSize: 18,
-        fontWeight: '600'
+        fontSize: 17,
+        fontWeight: '700',
     },
 });

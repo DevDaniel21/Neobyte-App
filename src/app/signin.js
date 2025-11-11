@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     titulo: {
-        fontSize: 32,
+        fontSize: 28,
         fontWeight: '900',
         marginBottom: 10,
         color: '#137969',
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     },
 
     primeiraInfo: {
-        marginTop: 60,
+        marginTop: 40,
         width: '85%',
     },
 
