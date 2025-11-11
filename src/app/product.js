@@ -2,13 +2,15 @@ import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { useRouter, useGlobalSearchParams } from 'expo-router';
 import { Image } from 'expo-image';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useState } from 'react';
+import { use, useEffect, useState } from 'react';
 
 export default function ProductDetails() {
     const router = useRouter();
     const params = useGlobalSearchParams();
-    
+
     const [favorited, setFavorited] = useState(false);
+    const [descricao, setDescricao] = useState('');
+    const [avaliacaoTotal, setAvaliacaoTotal] = useState('');
 
     const productData = {
         id: params.id,
@@ -17,7 +19,7 @@ export default function ProductDetails() {
         image: params.imagem,
     };
 
-    const toggleFavorite = () => setFavorited(prev => !prev);
+    const toggleFavorite = () => setFavorited((prev) => !prev);
 
     const handleBuy = () => {
         console.log('Comprando produto:', productData.id);
@@ -29,11 +31,25 @@ export default function ProductDetails() {
         // Adicionar lógica do carrinho
     };
 
+    useEffect(() => {
+        const getProductData = async () => {
+            const response = await fetch(
+                `http://localhost:4000/product/${productData.id}`
+            );
+            const data = await response.json();
+            setDescricao(data.product.descricao);
+            setAvaliacaoTotal(`(${data.product.comentario.length} avaliações)`);
+            const comentarios = data.product.comentario;
+            console.log(comentarios);
+        };
+        getProductData();
+    }, []);
+
     const renderStars = (rating = 3, total = 5) => {
         return Array.from({ length: total }, (_, index) => (
             <FontAwesome
                 key={index}
-                name={index < rating ? "star" : "star-o"}
+                name={index < rating ? 'star' : 'star-o'}
                 size={20}
                 color="#FFD700"
             />
@@ -50,11 +66,14 @@ export default function ProductDetails() {
                     contentFit="cover"
                     transition={300}
                 />
-                <Pressable onPress={toggleFavorite} style={styles.favoriteButton}>
+                <Pressable
+                    onPress={toggleFavorite}
+                    style={styles.favoriteButton}
+                >
                     <FontAwesome
-                        name={favorited ? "heart" : "heart-o"}
+                        name={favorited ? 'heart' : 'heart-o'}
                         size={28}
-                        color={favorited ? "#FF4444" : "#fff"}
+                        color={favorited ? '#FF4444' : '#fff'}
                     />
                 </Pressable>
             </View>
@@ -62,49 +81,68 @@ export default function ProductDetails() {
             {/* Informações do produto */}
             <View style={styles.infoSection}>
                 <Text style={styles.productName}>{productData.name}</Text>
-                
+
                 {/* Avaliação com estrelas */}
                 <View style={styles.ratingSection}>
-                    <View style={styles.starsRow}>
-                        {renderStars(3, 5)}
-                    </View>
-                    <Text style={styles.reviewCount}>(200 avaliações)</Text>
+                    <View style={styles.starsRow}>{renderStars(3, 5)}</View>
+                    <Text style={styles.reviewCount}>{avaliacaoTotal}</Text>
                 </View>
 
                 <View style={styles.priceSection}>
                     <Text style={styles.priceLabel}>Preço:</Text>
                     <Text style={styles.priceValue}>
-                        R$ {parseFloat(productData.price).toFixed(2).replace('.', ',')}
+                        R${' '}
+                        {parseFloat(productData.price)
+                            .toFixed(2)
+                            .replace('.', ',')}
                     </Text>
                 </View>
 
                 {/* Descrição do produto */}
                 <View style={styles.descriptionSection}>
                     <Text style={styles.sectionTitle}>Descrição</Text>
-                    <Text style={styles.descriptionText}>
-                        Este produto oferece excelente qualidade e durabilidade. 
-                        Perfeito para uso diário, combina funcionalidade com design moderno. 
-                        Fabricado com materiais de alta qualidade que garantem longa vida útil.
-                    </Text>
+                    <Text style={styles.descriptionText}>{descricao}</Text>
                 </View>
 
                 {/* Características */}
                 <View style={styles.featuresSection}>
                     <Text style={styles.sectionTitle}>Características</Text>
                     <View style={styles.featureItem}>
-                        <FontAwesome name="check-circle" size={18} color="#137969" />
-                        <Text style={styles.featureText}>Material de alta qualidade</Text>
+                        <FontAwesome
+                            name="check-circle"
+                            size={18}
+                            color="#137969"
+                        />
+                        <Text style={styles.featureText}>
+                            Material de alta qualidade
+                        </Text>
                     </View>
                     <View style={styles.featureItem}>
-                        <FontAwesome name="check-circle" size={18} color="#137969" />
-                        <Text style={styles.featureText}>Garantia de 12 meses</Text>
+                        <FontAwesome
+                            name="check-circle"
+                            size={18}
+                            color="#137969"
+                        />
+                        <Text style={styles.featureText}>
+                            Garantia de 12 meses
+                        </Text>
                     </View>
                     <View style={styles.featureItem}>
-                        <FontAwesome name="check-circle" size={18} color="#137969" />
-                        <Text style={styles.featureText}>Entrega rápida e segura</Text>
+                        <FontAwesome
+                            name="check-circle"
+                            size={18}
+                            color="#137969"
+                        />
+                        <Text style={styles.featureText}>
+                            Entrega rápida e segura
+                        </Text>
                     </View>
                     <View style={styles.featureItem}>
-                        <FontAwesome name="check-circle" size={18} color="#137969" />
+                        <FontAwesome
+                            name="check-circle"
+                            size={18}
+                            color="#137969"
+                        />
                         <Text style={styles.featureText}>Fácil manutenção</Text>
                     </View>
                 </View>
@@ -112,25 +150,28 @@ export default function ProductDetails() {
                 {/* Comentários */}
                 <View style={styles.commentsSection}>
                     <Text style={styles.sectionTitle}>Comentários</Text>
-                    
+
                     <View style={styles.commentCard}>
                         <Text style={styles.commentName}>João Silva</Text>
                         <Text style={styles.commentText}>
-                            Produto excelente! Superou minhas expectativas. A qualidade é muito boa e chegou rápido.
+                            Produto excelente! Superou minhas expectativas. A
+                            qualidade é muito boa e chegou rápido.
                         </Text>
                     </View>
 
                     <View style={styles.commentCard}>
                         <Text style={styles.commentName}>Maria Santos</Text>
                         <Text style={styles.commentText}>
-                            Adorei a compra! Muito bonito e funcional. Recomendo para todos.
+                            Adorei a compra! Muito bonito e funcional. Recomendo
+                            para todos.
                         </Text>
                     </View>
 
                     <View style={styles.commentCard}>
                         <Text style={styles.commentName}>Carlos Oliveira</Text>
                         <Text style={styles.commentText}>
-                            Ótimo custo-benefício. Produto de qualidade por um preço justo. Voltaria a comprar.
+                            Ótimo custo-benefício. Produto de qualidade por um
+                            preço justo. Voltaria a comprar.
                         </Text>
                     </View>
                 </View>
@@ -142,7 +183,11 @@ export default function ProductDetails() {
                         onPress={handleBuy}
                         android_ripple={{ color: '#0d5f52' }}
                     >
-                        <FontAwesome name="shopping-bag" size={20} color="#fff" />
+                        <FontAwesome
+                            name="shopping-bag"
+                            size={20}
+                            color="#fff"
+                        />
                         <Text style={styles.buttonText}>Comprar Agora</Text>
                     </Pressable>
 
@@ -152,7 +197,9 @@ export default function ProductDetails() {
                         android_ripple={{ color: '#555' }}
                     >
                         <FontAwesome name="cart-plus" size={20} color="#fff" />
-                        <Text style={styles.buttonText}>Adicionar ao Carrinho</Text>
+                        <Text style={styles.buttonText}>
+                            Adicionar ao Carrinho
+                        </Text>
                     </Pressable>
                 </View>
             </View>
