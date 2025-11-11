@@ -3,11 +3,8 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 
 export default function CardHome({ id, nome, valor, imagem }) {
-    id = 1;
-    nome =
-        'Placa de Video MSI GeForce RTX 5090 Ventus 3X OC, 32GB, GDDR7, 512-bit, G5090-32V3C.';
-    valor = '19.679,99';
-    imagem = 'https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/g/5/g5090-32v3c1.jpg';
+    imagem =
+        'https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/g/5/g5090-32v3c1.jpg';
 
     const hadleProduct = async () => {
         router.push({
@@ -24,13 +21,8 @@ export default function CardHome({ id, nome, valor, imagem }) {
                         style={styles.card_image}
                         source="https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/g/5/g5090-32v3c1.jpg"
                     />
-
-                    <Text style={styles.descricao_card}>
-                        Placa de Video MSI GeForce RTX 5090 Ventus 3X OC, 32GB,
-                        GDDR7, 512-bit, G5090-32V3C.
-                    </Text>
-
-                    <Text style={styles.descricao_preco}>R$: 19.679,99.</Text>
+                    <Text style={styles.descricao_card}>{nome}</Text>
+                    <Text style={styles.descricao_preco}>R$: {valor}</Text>
                 </View>
             </View>
         </Pressable>
@@ -48,6 +40,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 10,
         alignItems: 'center',
+        marginHorizontal: 5,
     },
     card_image: {
         height: 100,
@@ -56,6 +49,7 @@ const styles = StyleSheet.create({
     },
     descricao_card: {
         fontSize: 13,
+        minHeight: 40,
         color: 'black',
         marginTop: 15,
         fontWeight: '700',
