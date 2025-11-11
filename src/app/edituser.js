@@ -9,7 +9,6 @@ import {
 import { useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { parse } from '@babel/core';
 
 export default function EditUser() {
     const router = useRouter();
@@ -18,9 +17,9 @@ export default function EditUser() {
     const [email, setEmail] = useState('');
     const [senha, setPass] = useState('');
     const [avatar, setAvatar] = useState('');
-    const [nasc, setNasc] = useState('');
-    const [tel, setTel] = useState('');
-    const [cpf, setCpf] = useState('');
+    const [nasc, setNasc] = useState();
+    const [telefone, setTel] = useState();
+    const [cpf, setCpf] = useState();
 
     useEffect(() => {
         const carregarUser = async () => {
@@ -31,15 +30,9 @@ export default function EditUser() {
             setEmail(profile.email);
             setPass(profile.senha);
 
-            if (profile.telefone) {
-                setTel(profile.telefone);
-            }
-            if (profile.cpf) {
-                setCpf(profile.cpf);
-            }
-            if (profile.avatar) {
-                setAvatar(profile.avatar);
-            }
+            profile.telefone ? setTel(profile.telefone) : setTel(undefined);
+            profile.cpf ? setCpf(profile.cpf) : setCpf(undefined);
+            profile.avatar ? setAvatar(profile.avatar) : setAvatar(undefined);
         };
         carregarUser();
     }, []);
@@ -49,6 +42,8 @@ export default function EditUser() {
             nome,
             email,
             senha,
+            telefone: +telefone,
+            cpf,
         };
 
         const response = await fetch(`http://localhost:4000/user/${id}`, {
@@ -60,6 +55,11 @@ export default function EditUser() {
         });
 
         if (response.ok) {
+            const updatedProfile = { id: id, ...updatedUser };
+            await AsyncStorage.setItem(
+                'userLogged',
+                JSON.stringify(updatedProfile)
+            );
             console.log('Perfil editado com sucesso');
         } else {
             console.log('Erro ao editar');
@@ -112,7 +112,7 @@ export default function EditUser() {
                 <Text style={styles.label}>Telefone</Text>
                 <TextInput
                     style={styles.input}
-                    value={tel}
+                    value={telefone}
                     onChangeText={setTel}
                 />
 
