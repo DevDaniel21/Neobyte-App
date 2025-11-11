@@ -6,7 +6,12 @@ export default function Layout() {
             <Stack.Screen name="index" options={{ headerShown: false }} />
 
             <Stack.Screen
-                name="singup"
+                name="signin"
+                options={{ title: 'Entrar', headerShown: false }}
+            />
+
+            <Stack.Screen
+                name="signup"
                 options={{ title: 'Cadastrar', headerShown: false }}
             />
 
