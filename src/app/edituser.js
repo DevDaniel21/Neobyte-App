@@ -8,39 +8,50 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
-import  AsyncStorage from '@react-native-async-storage/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { parse } from '@babel/core';
 
 export default function EditUser() {
     const router = useRouter();
-    const [user, setUser] = useState(null);
-    const [name, setName] = useState('');
+    const [id, setId] = useState('');
+    const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
-    const [pass, setPass] = useState('');
+    const [senha, setPass] = useState('');
     const [avatar, setAvatar] = useState('');
     const [nasc, setNasc] = useState('');
     const [tel, setTel] = useState('');
     const [cpf, setCpf] = useState('');
 
     useEffect(() => {
-    const carregarUser = async () => {
-        const data = JSON.parse(localStorage.getItem('logado'));
-        if (data) {
-            setUser(data)
-            setName(data.nome)
-            setEmail(data.email)
+        const carregarUser = async () => {
+            const data = await AsyncStorage.getItem('userLogged');
+            const profile = JSON.parse(data);
+            setId(profile.id);
+            setNome(profile.nome);
+            setEmail(profile.email);
+            setPass(profile.senha);
+
+            if (profile.telefone) {
+                setTel(profile.telefone);
+            }
+            if (profile.cpf) {
+                setCpf(profile.cpf);
+            }
+            if (profile.avatar) {
+                setAvatar(profile.avatar);
+            }
         };
-    };
-    carregarUser();
+        carregarUser();
     }, []);
 
     const handleEdit = async () => {
         const updatedUser = {
-            name,
+            nome,
             email,
-            pass,
+            senha,
         };
 
-        const response = await fetch(`http://localhost:3000/user/${id}`, {
+        const response = await fetch(`http://localhost:4000/user/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -55,6 +66,24 @@ export default function EditUser() {
         }
     };
 
+    const handleDelete = async () => {
+        try {
+            const response = await fetch(`http://localhost:4000/user/${id}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                await AsyncStorage.removeItem('userLogged');
+                console.log('Perfil deletado com sucesso!');
+                router.navigate('/signin');
+            } else {
+                console.log('Erro ao deletar perfil');
+            }
+        } catch (err) {
+            console.error('Houve um erro: ', err);
+        }
+    };
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Meus dados</Text>
@@ -62,8 +91,8 @@ export default function EditUser() {
                 <Text style={styles.label}>Nome</Text>
                 <TextInput
                     style={styles.input}
-                    value={name}
-                    onChangeText={setName}
+                    value={nome}
+                    onChangeText={setNome}
                 />
 
                 <Text style={styles.label}>Email</Text>
@@ -95,11 +124,11 @@ export default function EditUser() {
                 />
             </View>
 
-            <Pressable onPress={() => router.navigate('index')}>
-                <Text style={styles.delete_text}>Exluir minha conta</Text>
+            <Pressable onPress={handleDelete}>
+                <Text style={styles.delete_text}>Excluir minha conta</Text>
             </Pressable>
 
-            <Pressable style={styles.save_button}>
+            <Pressable onPress={handleEdit} style={styles.save_button}>
                 <Text style={styles.save_text}>Salvar alterações</Text>
             </Pressable>
         </View>
