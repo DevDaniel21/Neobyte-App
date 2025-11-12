@@ -2,18 +2,18 @@ import { View, StyleSheet, Text, Pressable } from 'react-native';
 import { Image } from 'expo-image';
 import Foundation from '@expo/vector-icons/Foundation';
 
-export default function CardFavorite({ id, name, price, image }) {
+export default function CardFavorite({ id, nome, valor, capa }) {
     return (
         <View style={styles.card_container}>
             <View style={styles.image_container}>
                 <Image
                     style={styles.card_image}
                     contentFit="fill"
-                    source={image}  
+                    source={'https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/g/5/g5090-32v3c1.jpg'}  
                 />
             </View>
-            <Text style={styles.card_name}>{name}</Text>
-            <Text style={styles.card_value}>{`R$ ${price}`}</Text>
+            <Text style={styles.card_name}>{nome}</Text>
+            <Text style={styles.card_value}>{`R$ ${valor}`}</Text>
             <Pressable style={styles.card_delete}>
                 <Foundation name="x" size={24} color="#C30D0D" />
             </Pressable>
@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         borderColor: '#fff',
         borderWidth: 1,
+        marginBottom: 10,
     },
     image_container: {
         width: 80,
