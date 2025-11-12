@@ -17,7 +17,7 @@ export default function ProductDetails() {
     const [userName, setUserName] = useState('');
     const [commentText, setCommentText] = useState('');
 
-    const comments = [
+    const [comments, setComment] = useState([
         {
             id: 1,
             user: { nome: 'João Silva' },
@@ -33,7 +33,7 @@ export default function ProductDetails() {
             user: { nome: 'Carlos Oliveira' },
             comentario: 'Ótimo custo-benefício. Produto de qualidade por um preço justo. Voltaria a comprar.'
         }
-    ];
+    ]);
 
     const checkIfFavorited = async () => {
         const response = await fetch(
@@ -56,6 +56,15 @@ export default function ProductDetails() {
         price: params.valor || '0.00',
         image: params.imagem,
     };
+    
+    const handleComment = async () => {
+        setComment([...comments, {
+            id: comments.length + 1,
+            user: { nome: 'Daniel' },
+            comentario: commentText
+        }]);
+        setCommentText('');
+    }
 
     const handleFavorite = async () => {
         if (favorited == 'heart-o') {
@@ -243,7 +252,7 @@ export default function ProductDetails() {
                         />
                         <Pressable
                             style={styles.addCommentButton}
-                            disabled
+                            onPress={handleComment}
                         >
                             <FontAwesome name="send" size={16} color="#fff" />
                             <Text style={styles.addCommentButtonText}>Enviar Comentário</Text>
