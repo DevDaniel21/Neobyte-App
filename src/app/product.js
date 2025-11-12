@@ -1,16 +1,34 @@
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { useEffect, useState } from 'react';
 import { useRouter, useGlobalSearchParams } from 'expo-router';
 import { Image } from 'expo-image';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { use, useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ProductDetails() {
     const router = useRouter();
     const params = useGlobalSearchParams();
 
-    const [favorited, setFavorited] = useState(false);
+    const [favorited, setFavorited] = useState('');
+    const [color, setColor] = useState('');
     const [descricao, setDescricao] = useState('');
     const [avaliacaoTotal, setAvaliacaoTotal] = useState('');
+    const [user_id, setUserId] = useState('');
+
+    const checkIfFavorited = async () => {
+        const response = await fetch(
+            `http://localhost:4000/favorite/${user_id}`
+        );
+        const listfavorites = await response.json();
+        const isFavorited = await listfavorites.favorites.some((fav) => fav.produto_id === +params.id);
+        if (isFavorited) {
+            setFavorited('heart');
+            setColor('#FF4444');
+        } else {
+            setFavorited('heart-o');
+            setColor('#fff');
+        }
+    };
 
     const productData = {
         id: params.id,
@@ -19,17 +37,63 @@ export default function ProductDetails() {
         image: params.imagem,
     };
 
-    const toggleFavorite = () => setFavorited((prev) => !prev);
+    const handleFavorite = async () => {
+        if (favorited == 'heart-o') {
+            const newFavorite = await fetch(`http://localhost:4000/favorite/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: user_id,
+                    produto_id: productData.id,
+                }),
+            });
 
-    const handleBuy = () => {
-        console.log('Comprando produto:', productData.id);
-        // Adicionar lógica de compra
+            if (newFavorite.ok) {
+                setFavorited('heart');
+                setColor('#FF4444');
+            }
+        } else {
+            const deleteFavorite = await fetch(
+                `http://localhost:4000/favorite/`,
+                {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: user_id,
+                        produto_id: productData.id,
+                    }),
+                }
+            );
+
+            if (deleteFavorite.ok) {
+                setFavorited('heart-o');
+                setColor('#fff');
+            }
+        }
     };
 
     const handleAddToCart = () => {
         console.log('Adicionando ao carrinho:', productData.id);
         // Adicionar lógica do carrinho
     };
+
+    useEffect(() => {
+        const getUserId = async () => {
+            const userLogged = await AsyncStorage.getItem('userLogged');
+            const userData = JSON.parse(userLogged);
+            setUserId(userData.id);
+        };
+
+        getUserId();
+    }, []);
+
+    useEffect(() => {
+        if (user_id) {
+            checkIfFavorited();
+        }
+    }, [user_id]);
 
     useEffect(() => {
         const getProductData = async () => {
@@ -40,7 +104,7 @@ export default function ProductDetails() {
             setDescricao(data.product.descricao);
             setAvaliacaoTotal(`(${data.product.comentario.length} avaliações)`);
             const comentarios = data.product.comentario;
-            console.log(comentarios);
+            // console.log(comentarios);
         };
         getProductData();
     }, []);
@@ -67,14 +131,10 @@ export default function ProductDetails() {
                     transition={300}
                 />
                 <Pressable
-                    onPress={toggleFavorite}
+                    onPress={handleFavorite}
                     style={styles.favoriteButton}
                 >
-                    <FontAwesome
-                        name={favorited ? 'heart' : 'heart-o'}
-                        size={28}
-                        color={favorited ? '#FF4444' : '#fff'}
-                    />
+                    <FontAwesome name={favorited} size={28} color={color} />
                 </Pressable>
             </View>
 
@@ -180,7 +240,6 @@ export default function ProductDetails() {
                 <View style={styles.actionsContainer}>
                     <Pressable
                         style={[styles.actionButton, styles.buyButton]}
-                        onPress={handleBuy}
                         android_ripple={{ color: '#0d5f52' }}
                     >
                         <FontAwesome
