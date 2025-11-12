@@ -142,6 +142,7 @@ const styles = StyleSheet.create({
 
     cadastroText: {
         fontSize: 16,
+        fontFamily:'bold',
     },
 
     linkCadastroText: {

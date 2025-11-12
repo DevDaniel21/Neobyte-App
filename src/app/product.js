@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView, TextInput } from 'react-native';
 import { useEffect, useState } from 'react';
 import { useRouter, useGlobalSearchParams } from 'expo-router';
 import { Image } from 'expo-image';
@@ -14,6 +14,26 @@ export default function ProductDetails() {
     const [descricao, setDescricao] = useState('');
     const [avaliacaoTotal, setAvaliacaoTotal] = useState('');
     const [user_id, setUserId] = useState('');
+    const [userName, setUserName] = useState('');
+    const [commentText, setCommentText] = useState('');
+
+    const comments = [
+        {
+            id: 1,
+            user: { nome: 'João Silva' },
+            comentario: 'Produto excelente! Superou minhas expectativas. A qualidade é muito boa e chegou rápido.'
+        },
+        {
+            id: 2,
+            user: { nome: 'Maria Santos' },
+            comentario: 'Adorei a compra! Muito bonito e funcional. Recomendo para todos.'
+        },
+        {
+            id: 3,
+            user: { nome: 'Carlos Oliveira' },
+            comentario: 'Ótimo custo-benefício. Produto de qualidade por um preço justo. Voltaria a comprar.'
+        }
+    ];
 
     const checkIfFavorited = async () => {
         const response = await fetch(
@@ -84,6 +104,7 @@ export default function ProductDetails() {
             const userLogged = await AsyncStorage.getItem('userLogged');
             const userData = JSON.parse(userLogged);
             setUserId(userData.id);
+            setUserName(userData.nome);
         };
 
         getUserId();
@@ -103,8 +124,6 @@ export default function ProductDetails() {
             const data = await response.json();
             setDescricao(data.product.descricao);
             setAvaliacaoTotal(`(${data.product.comentario.length} avaliações)`);
-            const comentarios = data.product.comentario;
-            // console.log(comentarios);
         };
         getProductData();
     }, []);
@@ -211,29 +230,43 @@ export default function ProductDetails() {
                 <View style={styles.commentsSection}>
                     <Text style={styles.sectionTitle}>Comentários</Text>
 
-                    <View style={styles.commentCard}>
-                        <Text style={styles.commentName}>João Silva</Text>
-                        <Text style={styles.commentText}>
-                            Produto excelente! Superou minhas expectativas. A
-                            qualidade é muito boa e chegou rápido.
-                        </Text>
+                    {/* Formulário para adicionar comentário (apenas visual) */}
+                    <View style={styles.addCommentContainer}>
+                        <TextInput
+                            style={[styles.commentInput, styles.commentTextArea]}
+                            placeholder="Escreva seu comentário..."
+                            placeholderTextColor="#999"
+                            value={commentText}
+                            onChangeText={setCommentText}
+                            multiline
+                            numberOfLines={4}
+                        />
+                        <Pressable
+                            style={styles.addCommentButton}
+                            disabled
+                        >
+                            <FontAwesome name="send" size={16} color="#fff" />
+                            <Text style={styles.addCommentButtonText}>Enviar Comentário</Text>
+                        </Pressable>
                     </View>
 
-                    <View style={styles.commentCard}>
-                        <Text style={styles.commentName}>Maria Santos</Text>
-                        <Text style={styles.commentText}>
-                            Adorei a compra! Muito bonito e funcional. Recomendo
-                            para todos.
+                    {/* Lista de comentários */}
+                    {comments.length > 0 ? (
+                        comments.map((comment) => (
+                            <View key={comment.id} style={styles.commentCard}>
+                                <Text style={styles.commentName}>
+                                    {comment.user?.nome || 'Usuário'}
+                                </Text>
+                                <Text style={styles.commentText}>
+                                    {comment.comentario}
+                                </Text>
+                            </View>
+                        ))
+                    ) : (
+                        <Text style={styles.noCommentsText}>
+                            Nenhum comentário ainda. Seja o primeiro a comentar!
                         </Text>
-                    </View>
-
-                    <View style={styles.commentCard}>
-                        <Text style={styles.commentName}>Carlos Oliveira</Text>
-                        <Text style={styles.commentText}>
-                            Ótimo custo-benefício. Produto de qualidade por um
-                            preço justo. Voltaria a comprar.
-                        </Text>
-                    </View>
+                    )}
                 </View>
 
                 {/* Botões de ação */}
@@ -377,6 +410,48 @@ const styles = StyleSheet.create({
     commentsSection: {
         marginBottom: 24,
     },
+    addCommentContainer: {
+        backgroundColor: '#137969',
+        padding: 16,
+        borderRadius: 12,
+        marginBottom: 20,
+        gap: 12,
+    },
+    commentInput: {
+        backgroundColor: '#fff',
+        paddingHorizontal: 15,
+        paddingVertical: 12,
+        borderRadius: 8,
+        fontSize: 15,
+        color: '#222',
+        borderWidth: 1,
+        borderColor: '#ddd',
+    },
+    commentTextArea: {
+        height: 100,
+        textAlignVertical: 'top',
+    },
+    addCommentButton: {
+        backgroundColor: '#137969',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        borderRadius: 8,
+        gap: 8,
+    },
+    addCommentButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    noCommentsText: {
+        fontSize: 14,
+        color: '#999',
+        textAlign: 'center',
+        paddingVertical: 20,
+        fontStyle: 'italic',
+    },
     commentCard: {
         backgroundColor: '#f9f9f9',
         padding: 16,
@@ -385,16 +460,11 @@ const styles = StyleSheet.create({
         borderLeftWidth: 3,
         borderLeftColor: '#137969',
     },
-    commentHeader: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 10,
-        marginBottom: 10,
-    },
     commentName: {
         fontSize: 16,
         fontWeight: '600',
         color: '#222',
+        marginBottom: 8,
     },
     commentText: {
         fontSize: 14,
