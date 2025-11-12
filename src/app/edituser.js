@@ -42,7 +42,7 @@ export default function EditUser() {
             nome,
             email,
             senha,
-            telefone: +telefone,
+            telefone,
             cpf,
         };
 
