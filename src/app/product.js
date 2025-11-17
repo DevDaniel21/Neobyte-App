@@ -22,6 +22,7 @@ export default function ProductDetails() {
     const [color, setColor] = useState('');
     const [user_id, setUserId] = useState('');
     const [userName, setUserName] = useState('');
+    const [comments, setComments] = useState([]);
     const [commentText, setCommentText] = useState('');
 
     const [productData, setProductData] = useState({
@@ -42,6 +43,8 @@ export default function ProductDetails() {
                 descricao: data.product.descricao,
                 avaliacaoTotal: `${data.product.comentario.length} avaliações`,
             });
+            setComments(data.product.comentario);
+            console.log(data.product.comentario)
         };
         getProductData();
     }, []);
@@ -56,7 +59,17 @@ export default function ProductDetails() {
         getUserId();
     }, []);
 
-    const comments = [
+    useEffect(() => {
+        const listComments = async () => {
+            const response = await fetch(
+                `http://localhost:4000/comments/${productData.id}`
+            );
+            const data = await response.json();
+            setComments(data.comments);
+        }
+    })
+
+    const listComments = [
         {
             id: 1,
             user: { nome: 'João Silva' },
@@ -306,7 +319,7 @@ export default function ProductDetails() {
                                     {comment.user?.nome || 'Usuário'}
                                 </Text>
                                 <Text style={styles.commentText}>
-                                    {comment.comentario}
+                                    {comment.texto}
                                 </Text>
                             </View>
                         ))
