@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Favorites() {
     const { favorites, setFavorites } = useFavoriteStore();
+    const [listfavorites, setListFavorites] = useState(favorites);
     const [userId, setUserId] = useState('');
 
     useEffect(() => {
@@ -29,18 +30,20 @@ export default function Favorites() {
                     `http://localhost:4000/favorite/${userId}`
                 );
 
-                if (response.ok) {
-                    const data = await response.json();
-                    setFavorites(await data.favorites);
+                const data = await response.json();
+
+                if (response.ok && favorites.length === 0) {
+                    setFavorites(data.favorites);
+                } else if (favorites.length !== 0) {
+                    setFavorites([...favorites, ...data.favorites]);
                 } else {
                     console.log('Erro ao carregar lista');
                 }
             };
             listFavorites();
+            return;
         }
-    }, [userId, setFavorites]);
-
-    console.log('Favorites:', favorites);
+    }, [userId]);
 
     return (
         <View style={styles.container}>

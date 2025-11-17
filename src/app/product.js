@@ -1,38 +1,80 @@
-import { View, Text, StyleSheet, Pressable, ScrollView, TextInput } from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    Pressable,
+    ScrollView,
+    TextInput,
+} from 'react-native';
 import { useEffect, useState } from 'react';
 import { useRouter, useGlobalSearchParams } from 'expo-router';
 import { Image } from 'expo-image';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFavoriteStore } from '../store/useFavoriteStore';
 
 export default function ProductDetails() {
     const router = useRouter();
     const params = useGlobalSearchParams();
 
+    const { favorites, setFavorites } = useFavoriteStore();
     const [favorited, setFavorited] = useState('');
     const [color, setColor] = useState('');
-    const [descricao, setDescricao] = useState('');
-    const [avaliacaoTotal, setAvaliacaoTotal] = useState('');
     const [user_id, setUserId] = useState('');
     const [userName, setUserName] = useState('');
     const [commentText, setCommentText] = useState('');
+
+    const [productData, setProductData] = useState({
+        id: params.id,
+        name: params.nome || 'Produto sem nome',
+        price: params.valor || '0.00',
+        image: params.imagem,
+    });
+
+    useEffect(() => {
+        const getProductData = async () => {
+            const response = await fetch(
+                `http://localhost:4000/product/${productData.id}`
+            );
+            const data = await response.json();
+            setProductData({
+                ...productData,
+                descricao: data.product.descricao,
+                avaliacaoTotal: `${data.product.comentario.length} avaliações`,
+            });
+        };
+        getProductData();
+    }, []);
+
+    useEffect(() => {
+        const getUserId = async () => {
+            const userLogged = await AsyncStorage.getItem('userLogged');
+            const userData = JSON.parse(userLogged);
+            setUserId(userData.id);
+            setUserName(userData.nome);
+        };
+        getUserId();
+    }, []);
 
     const comments = [
         {
             id: 1,
             user: { nome: 'João Silva' },
-            comentario: 'Produto excelente! Superou minhas expectativas. A qualidade é muito boa e chegou rápido.'
+            comentario:
+                'Produto excelente! Superou minhas expectativas. A qualidade é muito boa e chegou rápido.',
         },
         {
             id: 2,
             user: { nome: 'Maria Santos' },
-            comentario: 'Adorei a compra! Muito bonito e funcional. Recomendo para todos.'
+            comentario:
+                'Adorei a compra! Muito bonito e funcional. Recomendo para todos.',
         },
         {
             id: 3,
             user: { nome: 'Carlos Oliveira' },
-            comentario: 'Ótimo custo-benefício. Produto de qualidade por um preço justo. Voltaria a comprar.'
-        }
+            comentario:
+                'Ótimo custo-benefício. Produto de qualidade por um preço justo. Voltaria a comprar.',
+        },
     ];
 
     const checkIfFavorited = async () => {
@@ -40,7 +82,9 @@ export default function ProductDetails() {
             `http://localhost:4000/favorite/${user_id}`
         );
         const listfavorites = await response.json();
-        const isFavorited = await listfavorites.favorites.some((fav) => fav.produto_id === +params.id);
+        const isFavorited = await listfavorites.favorites.some(
+            (fav) => fav.produto_id === +params.id
+        );
         if (isFavorited) {
             setFavorited('heart');
             setColor('#FF4444');
@@ -48,13 +92,6 @@ export default function ProductDetails() {
             setFavorited('heart-o');
             setColor('#fff');
         }
-    };
-
-    const productData = {
-        id: params.id,
-        name: params.nome || 'Produto sem nome',
-        price: params.valor || '0.00',
-        image: params.imagem,
     };
 
     const handleFavorite = async () => {
@@ -73,6 +110,34 @@ export default function ProductDetails() {
             if (newFavorite.ok) {
                 setFavorited('heart');
                 setColor('#FF4444');
+                if (favorites.length === 0) {
+                    setFavorites([
+                        {
+                            user_id: user_id,
+                            produto_id: productData.id,
+                            produto: {
+                                id: productData.id,
+                                nome: productData.name,
+                                valor: productData.price,
+                                capa: productData.image,
+                            },
+                        },
+                    ]);
+                } else {
+                    setFavorites([
+                        ...favorites,
+                        {
+                            user_id: user_id,
+                            produto_id: productData.id,
+                            produto: {
+                                id: productData.id,
+                                nome: productData.name,
+                                valor: productData.price,
+                                capa: productData.image,
+                            },
+                        },
+                    ]);
+                }
             }
         } else {
             const deleteFavorite = await fetch(
@@ -90,43 +155,20 @@ export default function ProductDetails() {
             if (deleteFavorite.ok) {
                 setFavorited('heart-o');
                 setColor('#fff');
+                const updatedFavorites = favorites.filter(
+                    (fav) => fav.produto_id != +productData.id
+                );
+                setFavorites(updatedFavorites);
+                console.log(updatedFavorites);
             }
         }
     };
-
-    const handleAddToCart = () => {
-        console.log('Adicionando ao carrinho:', productData.id);
-        // Adicionar lógica do carrinho
-    };
-
-    useEffect(() => {
-        const getUserId = async () => {
-            const userLogged = await AsyncStorage.getItem('userLogged');
-            const userData = JSON.parse(userLogged);
-            setUserId(userData.id);
-            setUserName(userData.nome);
-        };
-
-        getUserId();
-    }, []);
 
     useEffect(() => {
         if (user_id) {
             checkIfFavorited();
         }
     }, [user_id]);
-
-    useEffect(() => {
-        const getProductData = async () => {
-            const response = await fetch(
-                `http://localhost:4000/product/${productData.id}`
-            );
-            const data = await response.json();
-            setDescricao(data.product.descricao);
-            setAvaliacaoTotal(`(${data.product.comentario.length} avaliações)`);
-        };
-        getProductData();
-    }, []);
 
     const renderStars = (rating = 3, total = 5) => {
         return Array.from({ length: total }, (_, index) => (
@@ -164,7 +206,9 @@ export default function ProductDetails() {
                 {/* Avaliação com estrelas */}
                 <View style={styles.ratingSection}>
                     <View style={styles.starsRow}>{renderStars(3, 5)}</View>
-                    <Text style={styles.reviewCount}>{avaliacaoTotal}</Text>
+                    <Text style={styles.reviewCount}>
+                        {productData.avaliacaoTotal}
+                    </Text>
                 </View>
 
                 <View style={styles.priceSection}>
@@ -180,7 +224,9 @@ export default function ProductDetails() {
                 {/* Descrição do produto */}
                 <View style={styles.descriptionSection}>
                     <Text style={styles.sectionTitle}>Descrição</Text>
-                    <Text style={styles.descriptionText}>{descricao}</Text>
+                    <Text style={styles.descriptionText}>
+                        {productData.descricao}
+                    </Text>
                 </View>
 
                 {/* Características */}
@@ -233,7 +279,10 @@ export default function ProductDetails() {
                     {/* Formulário para adicionar comentário (apenas visual) */}
                     <View style={styles.addCommentContainer}>
                         <TextInput
-                            style={[styles.commentInput, styles.commentTextArea]}
+                            style={[
+                                styles.commentInput,
+                                styles.commentTextArea,
+                            ]}
                             placeholder="Escreva seu comentário..."
                             placeholderTextColor="#999"
                             value={commentText}
@@ -241,12 +290,11 @@ export default function ProductDetails() {
                             multiline
                             numberOfLines={4}
                         />
-                        <Pressable
-                            style={styles.addCommentButton}
-                            disabled
-                        >
+                        <Pressable style={styles.addCommentButton} disabled>
                             <FontAwesome name="send" size={16} color="#fff" />
-                            <Text style={styles.addCommentButtonText}>Enviar Comentário</Text>
+                            <Text style={styles.addCommentButtonText}>
+                                Enviar Comentário
+                            </Text>
                         </Pressable>
                     </View>
 
@@ -285,7 +333,6 @@ export default function ProductDetails() {
 
                     <Pressable
                         style={[styles.actionButton, styles.cartButton]}
-                        onPress={handleAddToCart}
                         android_ripple={{ color: '#555' }}
                     >
                         <FontAwesome name="cart-plus" size={20} color="#fff" />
