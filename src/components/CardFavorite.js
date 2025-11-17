@@ -1,20 +1,60 @@
 import { View, StyleSheet, Text, Pressable } from 'react-native';
+import { useEffect, useState } from 'react';
 import { Image } from 'expo-image';
 import Foundation from '@expo/vector-icons/Foundation';
+import { useFavoriteStore } from '../store/useFavoriteStore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CardFavorite({ id, nome, valor, capa }) {
+    const { favorites, setFavorites } = useFavoriteStore();
+    const [user_id, setUserId] = useState('');
+
+    useEffect(() => {
+        const getUserId = async () => {
+            const userLogged = await AsyncStorage.getItem('userLogged');
+            const userData = JSON.parse(userLogged);
+            setUserId(userData.id);
+        };
+        getUserId();
+    }, []);
+
+    const handleDeleteFavorite = async () => {
+        console.log('Começou a deletar');
+        const deleteFavorite = await fetch(`http://localhost:4000/favorite/`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_id: user_id,
+                produto_id: +id,
+            }),
+        });
+
+        if (deleteFavorite.ok) {
+            console.log('Deletou com sucesso');
+            const updatedFavorites = favorites.filter(
+                (fav) => fav.produto_id != +id
+            );
+            setFavorites(updatedFavorites);
+        }
+    };
+
     return (
         <View style={styles.card_container}>
             <View style={styles.image_container}>
                 <Image
                     style={styles.card_image}
                     contentFit="fill"
-                    source={'https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/g/5/g5090-32v3c1.jpg'}  
+                    source={
+                        'https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/g/5/g5090-32v3c1.jpg'
+                    }
                 />
             </View>
             <Text style={styles.card_name}>{nome}</Text>
             <Text style={styles.card_value}>{`R$ ${valor}`}</Text>
-            <Pressable style={styles.card_delete}>
+            <Pressable
+                style={styles.card_delete}
+                onPress={handleDeleteFavorite}
+            >
                 <Foundation name="x" size={24} color="#C30D0D" />
             </Pressable>
         </View>
@@ -39,11 +79,11 @@ const styles = StyleSheet.create({
         width: 80,
         height: 90,
         padding: 5,
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
     },
     card_image: {
-        width: "100%",
-        height: "100%",
+        width: '100%',
+        height: '100%',
     },
     card_name: {
         height: '100%',
