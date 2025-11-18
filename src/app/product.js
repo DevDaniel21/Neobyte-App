@@ -13,12 +13,15 @@ import { Image } from 'expo-image';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFavoriteStore } from '../store/useFavoriteStore';
+import { useCartStore } from '../store/useCartStore';
 
 export default function ProductDetails() {
     const router = useRouter();
     const params = useGlobalSearchParams();
 
     const { favorites, setFavorites } = useFavoriteStore();
+    const { cart, setCart } = useCartStore();
+    const [canAddToCart, setcanAddToCart] = useState(true);
     const [favorited, setFavorited] = useState('');
     const [color, setColor] = useState('');
     const [user_id, setUserId] = useState('');
@@ -59,6 +62,22 @@ export default function ProductDetails() {
         };
         getUserId();
     }, []);
+
+    const checkIfInCart = async () => {
+        const response = await fetch(`http://localhost:4000/cart/${user_id}`);
+
+        const cartData = await response.json();
+        const cartList = cartData.produtoAdicionado;
+
+        if (cartList.length !== 0) {
+            console.log('Carrinho não está vazio: ', cartList);
+            const isInCart = cartList.some((item) => item.produto_id === +params.id);
+            console.log('Está no carrinho? ', isInCart);
+            setcanAddToCart(!isInCart);
+        } else {
+            setcanAddToCart(true);
+        }
+    };
 
     const checkIfFavorited = async () => {
         const response = await fetch(
@@ -237,7 +256,6 @@ export default function ProductDetails() {
     };
 
     const handleAddToCart = async () => {
-        console.log('Tentou colocar no carrinho');
         try {
             const response = await fetch(`http://localhost:4000/cart/`, {
                 method: 'POST',
@@ -252,9 +270,20 @@ export default function ProductDetails() {
             });
 
             if (response.ok) {
+                const cartData = await response.json();
+                const produtoAdicionado = cartData.produtoAdicionado;
                 console.log('Adicionado ao carrinho com sucesso!');
-                console.log(await response.json());
-                Alert.alert('Sucesso', 'Produto adicionado ao carrinho!');
+
+                if (cart.length === 0) {
+                    setCart([produtoAdicionado]);
+                } else {
+                    setCart([...cart, produtoAdicionado]);
+                }
+                console.log(
+                    'Negado de adicionar ao carrinho de novo: ',
+                    canAddToCart
+                );
+                setcanAddToCart(false);
             }
         } catch (error) {
             console.error('Erro ao tentar adicionar ao carrinho: ', error);
@@ -265,6 +294,7 @@ export default function ProductDetails() {
     useEffect(() => {
         if (user_id) {
             checkIfFavorited();
+            checkIfInCart();
         }
     }, [user_id]);
 
@@ -469,13 +499,14 @@ export default function ProductDetails() {
                 {/* Botões de ação */}
                 <View style={styles.actionsContainer}>
                     <Pressable
-                        style={[styles.actionButton, styles.cartButton]}
+                        style={[styles.actionButton, styles.cartButton, !canAddToCart && styles.cartButtonDisabled]}
                         android_ripple={{ color: '#555' }}
                         onPress={handleAddToCart}
+                        disabled={!canAddToCart}
                     >
                         <FontAwesome name="cart-plus" size={20} color="#fff" />
                         <Text style={styles.buttonText}>
-                            Adicionar ao Carrinho
+                            {canAddToCart ? 'Adicionar ao carrinho' : 'Já está no carrinho'}
                         </Text>
                     </Pressable>
                 </View>
@@ -702,6 +733,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#137969',
     },
     cartButton: {
+        backgroundColor: '#137969',
+    },
+    cartButtonDisabled: {
         backgroundColor: '#444',
     },
     buttonText: {
