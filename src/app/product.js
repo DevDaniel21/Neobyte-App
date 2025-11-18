@@ -5,6 +5,7 @@ import {
     Pressable,
     ScrollView,
     TextInput,
+    Alert,
 } from 'react-native';
 import { useEffect, useState } from 'react';
 import { useRouter, useGlobalSearchParams } from 'expo-router';
@@ -27,6 +28,7 @@ export default function ProductDetails() {
     const [userName, setUserName] = useState('');
     const [comments, setComments] = useState([]);
     const [commentText, setCommentText] = useState('');
+    const [rating, setRating] = useState(5); // Estado para controlar a avaliação
 
     const [productData, setProductData] = useState({
         id: params.id,
@@ -164,6 +166,11 @@ export default function ProductDetails() {
     };
 
     const handleSubmitComment = async () => {
+        if (!commentText.trim()) {
+            Alert.alert('Atenção', 'Por favor, escreva um comentário.');
+            return;
+        }
+
         try {
             const response = await fetch(`http://localhost:4000/comment/`, {
                 method: 'POST',
@@ -174,7 +181,7 @@ export default function ProductDetails() {
                     user_id: +user_id,
                     produto_id: +productData.id,
                     texto: commentText,
-                    estrela: 5,
+                    estrela: rating, // Usa a avaliação selecionada
                 }),
             });
 
@@ -189,13 +196,63 @@ export default function ProductDetails() {
                         user_id: +user_id,
                         produto_id: +productData.id,
                         texto: commentText,
-                        estrela: 5,
+                        estrela: rating,
                     },
                 ]);
+                setCommentText(''); // Limpa o campo de texto
+                setRating(5); // Reseta a avaliação para 5 estrelas
             }
         } catch (error) {
             console.error('Houve um erro ao tentar enviar comentário:', error);
+            Alert.alert('Erro', 'Não foi possível enviar o comentário.');
         }
+    };
+
+    const handleDeleteComment = async (commentId) => {
+        Alert.alert(
+            'Confirmar exclusão',
+            'Tem certeza que deseja excluir este comentário?',
+            [
+                {
+                    text: 'Cancelar',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Excluir',
+                    style: 'destructive',
+                    onPress: async () => {
+                        try {
+                            const response = await fetch(
+                                `http://localhost:4000/comment/${commentId}`,
+                                {
+                                    method: 'DELETE',
+                                }
+                            );
+
+                            if (response.ok) {
+                                console.log('Comentário excluído com sucesso!');
+                                setComments(
+                                    comments.filter(
+                                        (comment) => comment.id !== commentId
+                                    )
+                                );
+                            } else {
+                                Alert.alert(
+                                    'Erro',
+                                    'Não foi possível excluir o comentário.'
+                                );
+                            }
+                        } catch (error) {
+                            console.error('Erro ao excluir comentário:', error);
+                            Alert.alert(
+                                'Erro',
+                                'Não foi possível excluir o comentário.'
+                            );
+                        }
+                    },
+                },
+            ]
+        );
     };
 
     const handleAddToCart = async () => {
@@ -230,6 +287,7 @@ export default function ProductDetails() {
             }
         } catch (error) {
             console.error('Erro ao tentar adicionar ao carrinho: ', error);
+            Alert.alert('Erro', 'Não foi possível adicionar ao carrinho.');
         }
     };
 
@@ -240,15 +298,39 @@ export default function ProductDetails() {
         }
     }, [user_id]);
 
-    const renderStars = (rating = 3, total = 5) => {
+    const renderStars = (currentRating = 3, total = 5) => {
         return Array.from({ length: total }, (_, index) => (
             <FontAwesome
                 key={index}
-                name={index < rating ? 'star' : 'star-o'}
+                name={index < currentRating ? 'star' : 'star-o'}
                 size={20}
                 color="#FFD700"
             />
         ));
+    };
+
+    // Componente para selecionar estrelas (editável)
+    const renderSelectableStars = () => {
+        return (
+            <View style={styles.ratingContainer}>
+                <Text style={styles.ratingLabel}>Sua avaliação:</Text>
+                <View style={styles.starsRow}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                        <Pressable
+                            key={star}
+                            onPress={() => setRating(star)}
+                            style={styles.starButton}
+                        >
+                            <FontAwesome
+                                name={star <= rating ? 'star' : 'star-o'}
+                                size={28}
+                                color="#FFD700"
+                            />
+                        </Pressable>
+                    ))}
+                </View>
+            </View>
+        );
     };
 
     return (
@@ -347,6 +429,9 @@ export default function ProductDetails() {
                     <Text style={styles.sectionTitle}>Comentários</Text>
 
                     <View style={styles.addCommentContainer}>
+                        {/* Seletor de estrelas */}
+                        {renderSelectableStars()}
+
                         <TextInput
                             style={[
                                 styles.commentInput,
@@ -374,9 +459,31 @@ export default function ProductDetails() {
                     {comments.length > 0 ? (
                         comments.map((comment) => (
                             <View key={comment.id} style={styles.commentCard}>
-                                <Text style={styles.commentName}>
-                                    {comment.user?.nome || 'Usuário'}
-                                </Text>
+                                <View style={styles.commentHeader}>
+                                    <View style={styles.commentUserInfo}>
+                                        <Text style={styles.commentName}>
+                                            {comment.user?.nome || 'Usuário'}
+                                        </Text>
+                                        <View style={styles.commentStars}>
+                                            {renderStars(comment.estrela, 5)}
+                                        </View>
+                                    </View>
+                                    {/* Botão de excluir (só aparece para o autor) */}
+                                    {comment.user_id === +user_id && (
+                                        <Pressable
+                                            onPress={() =>
+                                                handleDeleteComment(comment.id)
+                                            }
+                                            style={styles.deleteButton}
+                                        >
+                                            <FontAwesome
+                                                name="trash"
+                                                size={18}
+                                                color="#FF4444"
+                                            />
+                                        </Pressable>
+                                    )}
+                                </View>
                                 <Text style={styles.commentText}>
                                     {comment.texto}
                                 </Text>
@@ -391,18 +498,6 @@ export default function ProductDetails() {
 
                 {/* Botões de ação */}
                 <View style={styles.actionsContainer}>
-                    {/* <Pressable
-                        style={[styles.actionButton, styles.buyButton]}
-                        android_ripple={{ color: '#0d5f52' }}
-                    >
-                        <FontAwesome
-                            name="shopping-bag"
-                            size={20}
-                            color="#fff"
-                        />
-                        <Text style={styles.buttonText}>Comprar Agora</Text>
-                    </Pressable> */}
-
                     <Pressable
                         style={[styles.actionButton, styles.cartButton, !canAddToCart && styles.cartButtonDisabled]}
                         android_ripple={{ color: '#555' }}
@@ -532,11 +627,24 @@ const styles = StyleSheet.create({
         marginBottom: 24,
     },
     addCommentContainer: {
-        backgroundColor: '#137969',
+        backgroundColor: '#f5f5f5',
         padding: 16,
         borderRadius: 12,
         marginBottom: 20,
         gap: 12,
+        borderWidth: 1,
+        borderColor: '#e0e0e0',
+    },
+    ratingContainer: {
+        gap: 8,
+    },
+    ratingLabel: {
+        fontSize: 15,
+        fontWeight: '600',
+        color: '#222',
+    },
+    starButton: {
+        padding: 4,
     },
     commentInput: {
         backgroundColor: '#fff',
@@ -581,11 +689,29 @@ const styles = StyleSheet.create({
         borderLeftWidth: 3,
         borderLeftColor: '#137969',
     },
+    commentHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        marginBottom: 8,
+    },
+    commentUserInfo: {
+        flex: 1,
+        gap: 6,
+    },
     commentName: {
         fontSize: 16,
         fontWeight: '600',
         color: '#222',
-        marginBottom: 8,
+    },
+    commentStars: {
+        flexDirection: 'row',
+        gap: 2,
+    },
+    deleteButton: {
+        padding: 8,
+        borderRadius: 8,
+        backgroundColor: '#ffe5e5',
     },
     commentText: {
         fontSize: 14,
