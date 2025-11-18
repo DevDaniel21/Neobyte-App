@@ -9,6 +9,7 @@ export default function CardFavorite({
     bairro,
     cidade,
     estado,
+    children,
 }) {
     return (
         <View style={styles.card_container}>
@@ -18,13 +19,14 @@ export default function CardFavorite({
             <Text
                 style={styles.card_text}
             >{`CEP ${cep}, ${cidade}, ${estado}`}</Text>
+            {children ? <View style={styles.actionsOverlay}>{children}</View> : null}
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     card_container: {
-        width: '100%',
+        flex: 1,
         justifyContent: 'center',
         height: 100,
         overflow: 'hidden',
@@ -33,7 +35,16 @@ const styles = StyleSheet.create({
         borderColor: '#fff',
         borderWidth: 1,
         paddingLeft: 20,
-        paddingVertical: 10
+        paddingVertical: 10,
+        paddingRight: 12,
+    },
+
+    actionsOverlay: {
+        position: 'absolute',
+        top: 8,
+        right: 8,
+        flexDirection: 'column',
+        alignItems: 'flex-end',
     },
     card_name: {
         color: '#fff',
