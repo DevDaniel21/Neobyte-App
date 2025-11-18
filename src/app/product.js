@@ -44,7 +44,6 @@ export default function ProductDetails() {
                 avaliacaoTotal: `${data.product.comentario.length} avaliações`,
             });
             setComments(data.product.comentario);
-            console.log(data.product.comentario)
         };
         getProductData();
     }, []);
@@ -58,37 +57,6 @@ export default function ProductDetails() {
         };
         getUserId();
     }, []);
-
-    useEffect(() => {
-        const listComments = async () => {
-            const response = await fetch(
-                `http://localhost:4000/comments/${productData.id}`
-            );
-            const data = await response.json();
-            setComments(data.comments);
-        }
-    })
-
-    const listComments = [
-        {
-            id: 1,
-            user: { nome: 'João Silva' },
-            comentario:
-                'Produto excelente! Superou minhas expectativas. A qualidade é muito boa e chegou rápido.',
-        },
-        {
-            id: 2,
-            user: { nome: 'Maria Santos' },
-            comentario:
-                'Adorei a compra! Muito bonito e funcional. Recomendo para todos.',
-        },
-        {
-            id: 3,
-            user: { nome: 'Carlos Oliveira' },
-            comentario:
-                'Ótimo custo-benefício. Produto de qualidade por um preço justo. Voltaria a comprar.',
-        },
-    ];
 
     const checkIfFavorited = async () => {
         const response = await fetch(
@@ -172,8 +140,66 @@ export default function ProductDetails() {
                     (fav) => fav.produto_id != +productData.id
                 );
                 setFavorites(updatedFavorites);
-                console.log(updatedFavorites);
             }
+        }
+    };
+
+    const handleSubmitComment = async () => {
+        try {
+            const response = await fetch(`http://localhost:4000/comment/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: +user_id,
+                    produto_id: +productData.id,
+                    texto: commentText,
+                    estrela: 5,
+                }),
+            });
+
+            if (response.ok) {
+                console.log('Criado com sucesso!');
+                const commentData = await response.json();
+                setComments([
+                    ...comments,
+                    {
+                        id: commentData.comment.id,
+                        user: { id: user_id, nome: userName },
+                        user_id: +user_id,
+                        produto_id: +productData.id,
+                        texto: commentText,
+                        estrela: 5,
+                    },
+                ]);
+            }
+        } catch (error) {
+            console.error('Houve um erro ao tentar enviar comentário:', error);
+        }
+    };
+
+    const handleAddToCart = async () => {
+        console.log('Tentou colocar no carrinho');
+        try {
+            const response = await fetch(`http://localhost:4000/cart/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: +user_id,
+                    produto_id: +productData.id,
+                    quantidade: 1,
+                }),
+            });
+
+            if (response.ok) {
+                console.log('Adicionado ao carrinho com sucesso!');
+                console.log(await response.json());
+            }
+        } catch (error) {
+            console.error('Erro ao tentar adicionar ao carrinho: ', error);
         }
     };
 
@@ -289,7 +315,6 @@ export default function ProductDetails() {
                 <View style={styles.commentsSection}>
                     <Text style={styles.sectionTitle}>Comentários</Text>
 
-                    {/* Formulário para adicionar comentário (apenas visual) */}
                     <View style={styles.addCommentContainer}>
                         <TextInput
                             style={[
@@ -303,7 +328,10 @@ export default function ProductDetails() {
                             multiline
                             numberOfLines={4}
                         />
-                        <Pressable style={styles.addCommentButton} disabled>
+                        <Pressable
+                            style={styles.addCommentButton}
+                            onPress={handleSubmitComment}
+                        >
                             <FontAwesome name="send" size={16} color="#fff" />
                             <Text style={styles.addCommentButtonText}>
                                 Enviar Comentário
@@ -332,7 +360,7 @@ export default function ProductDetails() {
 
                 {/* Botões de ação */}
                 <View style={styles.actionsContainer}>
-                    <Pressable
+                    {/* <Pressable
                         style={[styles.actionButton, styles.buyButton]}
                         android_ripple={{ color: '#0d5f52' }}
                     >
@@ -342,11 +370,12 @@ export default function ProductDetails() {
                             color="#fff"
                         />
                         <Text style={styles.buttonText}>Comprar Agora</Text>
-                    </Pressable>
+                    </Pressable> */}
 
                     <Pressable
                         style={[styles.actionButton, styles.cartButton]}
                         android_ripple={{ color: '#555' }}
+                        onPress={handleAddToCart}
                     >
                         <FontAwesome name="cart-plus" size={20} color="#fff" />
                         <Text style={styles.buttonText}>
