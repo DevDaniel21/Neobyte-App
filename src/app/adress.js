@@ -1,46 +1,42 @@
-import { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView, Modal, TextInput } from 'react-native';
+import { useEffect, useState } from 'react';
+import {
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+    Alert,
+    ScrollView,
+    Modal,
+    TextInput,
+} from 'react-native';
 import CardAdress from '../components/CardAdress';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { useGlobalSearchParams } from 'expo-router';
 
 export default function Adress() {
-    const [adresses, setAdresses] = useState([
-        {
-            id: '1',
-            name: 'Minha Casa',
-            cep: 11669400,
-            numero: 100,
-            rua: 'Ana justina Ferreira Neri',
-            bairro: 'Travessão',
-            cidade: 'Caraguatatuba',
-            estado: 'SP',
-        },
-        {
-            id: '2',
-            name: 'Trabalho',
-            cep: 11669400,
-            numero: 100,
-            rua: 'Ana justina Ferreira Neri',
-            bairro: 'Travessão',
-            cidade: 'Caraguatatuba',
-            estado: 'SP',
-        },
-        {
-            id: '3',
-            name: 'Outra Casa',
-            cep: 11669400,
-            numero: 100,
-            rua: 'Ana justina Ferreira Neri',
-            bairro: 'Travessão',
-            cidade: 'Caraguatatuba',
-            estado: 'SP',
-        },
-    ]);
+    const params = useGlobalSearchParams();
+
+    const [adresses, setAdresses] = useState([]);
+
+    useEffect(() => {
+        const getAdresses = async () => {
+            const response = await fetch(
+                `http://localhost:4000/adress/user/${params.id}`
+            );
+
+            if (response.ok) {
+                const adressData = await response.json();
+                setAdresses(adressData.adress);
+                console.log(adressData);
+            }
+        };
+        getAdresses();
+    }, []);
 
     const [modalVisible, setModalVisible] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [formData, setFormData] = useState({
-        name: '',
+        nome: '',
         cep: '',
         numero: '',
         rua: '',
@@ -51,7 +47,7 @@ export default function Adress() {
 
     const resetForm = () => {
         setFormData({
-            name: '',
+            nome: '',
             cep: '',
             numero: '',
             rua: '',
@@ -62,16 +58,33 @@ export default function Adress() {
         setEditingId(null);
     };
 
-    const handleDelete = (id) => {
-        setAdresses(adresses.filter(addr => addr.id !== id));
-        Alert.alert('Sucesso', 'Endereço excluído!');
+    const handleDelete = async (id) => {
+        try {
+            console.log('Tentou atualizar');
+            const response = await fetch(`http://localhost:4000/adress`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: id,
+                    user_id: Number(params.id),
+                }),
+            });
+
+            if (response.ok) {
+                console.log(await response.json());
+                setAdresses(adresses.filter((addr) => addr.id !== id));
+                Alert.alert('Sucesso', 'Endereço excluído!');
+            }
+        } catch (error) {
+            console.error('Houve um erro, ', error);
+        }
     };
 
     const handleEdit = (id) => {
-        const addressToEdit = adresses.find(addr => addr.id === id);
+        const addressToEdit = adresses.find((addr) => addr.id === id);
         if (addressToEdit) {
             setFormData({
-                name: addressToEdit.name,
+                nome: addressToEdit.nome,
                 cep: addressToEdit.cep.toString(),
                 numero: addressToEdit.numero.toString(),
                 rua: addressToEdit.rua,
@@ -89,44 +102,87 @@ export default function Adress() {
         setModalVisible(true);
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         // Validação básica
-        if (!formData.name || !formData.cep || !formData.numero || !formData.rua) {
+        if (
+            !formData.nome ||
+            !formData.cep ||
+            !formData.numero ||
+            !formData.rua
+        ) {
             Alert.alert('Erro', 'Preencha todos os campos obrigatórios');
             return;
         }
 
         if (editingId) {
-            // Atualizar endereço existente
-            setAdresses(adresses.map(addr => 
-                addr.id === editingId 
-                    ? {
-                        ...addr,
-                        name: formData.name,
-                        cep: parseInt(formData.cep),
-                        numero: parseInt(formData.numero),
+            try {
+                console.log('Tentou atualizar');
+                const response = await fetch(`http://localhost:4000/adress`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: editingId,
+                        user_id: Number(params.id),
+                        nome: formData.nome,
+                        cep: formData.cep,
+                        numero: Number(formData.numero),
                         rua: formData.rua,
                         bairro: formData.bairro,
                         cidade: formData.cidade,
                         estado: formData.estado,
-                    }
-                    : addr
-            ));
+                    }),
+                });
+
+                if (response.ok) {
+                    console.log(await response.json());
+                }
+            } catch (error) {
+                console.error('Houve um erro, ', error);
+            }
+
+            setAdresses(
+                adresses.map((addr) =>
+                    addr.id === editingId
+                        ? {
+                              ...addr,
+                              nome: formData.nome,
+                              cep: parseInt(formData.cep),
+                              numero: parseInt(formData.numero),
+                              rua: formData.rua,
+                              bairro: formData.bairro,
+                              cidade: formData.cidade,
+                              estado: formData.estado,
+                          }
+                        : addr
+                )
+            );
             Alert.alert('Sucesso', 'Endereço atualizado!');
         } else {
-            // Adicionar novo endereço
-            const newAddress = {
-                id: Date.now().toString(),
-                name: formData.name,
-                cep: parseInt(formData.cep),
-                numero: parseInt(formData.numero),
-                rua: formData.rua,
-                bairro: formData.bairro,
-                cidade: formData.cidade,
-                estado: formData.estado,
-            };
-            setAdresses([...adresses, newAddress]);
-            Alert.alert('Sucesso', 'Endereço adicionado!');
+            try {
+                const response = await fetch(`http://localhost:4000/adress`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: Number(params.id),
+                        nome: formData.nome,
+                        cep: formData.cep,
+                        numero: Number(formData.numero),
+                        rua: formData.rua,
+                        bairro: formData.bairro,
+                        cidade: formData.cidade,
+                        estado: formData.estado,
+                    }),
+                });
+
+                if (response.ok) {
+                    const adressData = await response.json()
+                    const newAdress = adressData.adress
+                    setAdresses([...adresses, newAdress]);
+                    Alert.alert('Sucesso', 'Endereço adicionado!');
+                }
+            } catch (error) {
+                console.log('Houve um erro: ', error);
+            }
         }
 
         setModalVisible(false);
@@ -140,12 +196,15 @@ export default function Adress() {
                 <Text style={styles.title}>Meus Endereços</Text>
             </View>
 
-            <ScrollView style={styles.adresses} contentContainerStyle={styles.adressesContent}>
+            <ScrollView
+                style={styles.adresses}
+                contentContainerStyle={styles.adressesContent}
+            >
                 {adresses.map((favorite) => (
                     <View key={favorite.id} style={styles.addressRow}>
                         <CardAdress
                             id={favorite.id}
-                            name={favorite.name}
+                            nome={favorite.nome}
                             cep={favorite.cep}
                             numero={favorite.numero}
                             rua={favorite.rua}
@@ -156,17 +215,24 @@ export default function Adress() {
                             <TouchableOpacity
                                 style={styles.actionButton}
                                 onPress={() => handleEdit(favorite.id)}
-                                accessibilityLabel={`Editar ${favorite.name}`}
+                                accessibilityLabel={`Editar ${favorite.nome}`}
                             >
-                               <AntDesign name="edit" size={18} color="#fff" />
+                                <AntDesign name="edit" size={18} color="#fff" />
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                style={[styles.actionButton, styles.deleteButton]}
+                                style={[
+                                    styles.actionButton,
+                                    styles.deleteButton,
+                                ]}
                                 onPress={() => handleDelete(favorite.id)}
-                                accessibilityLabel={`Remover ${favorite.name}`}
+                                accessibilityLabel={`Remover ${favorite.nome}`}
                             >
-                               <AntDesign name="delete" size={18} color="#fff" />
+                                <AntDesign
+                                    name="delete"
+                                    size={18}
+                                    color="#fff"
+                                />
                             </TouchableOpacity>
                         </CardAdress>
                     </View>
@@ -192,15 +258,21 @@ export default function Adress() {
                     <View style={styles.modalContent}>
                         <View style={styles.modalHeader}>
                             <Text style={styles.modalTitle}>
-                                {editingId ? 'Editar Endereço' : 'Novo Endereço'}
+                                {editingId
+                                    ? 'Editar Endereço'
+                                    : 'Novo Endereço'}
                             </Text>
-                            <TouchableOpacity 
+                            <TouchableOpacity
                                 onPress={() => {
                                     setModalVisible(false);
                                     resetForm();
                                 }}
                             >
-                                <AntDesign name="close" size={24} color="#fff" />
+                                <AntDesign
+                                    name="close"
+                                    size={24}
+                                    color="#fff"
+                                />
                             </TouchableOpacity>
                         </View>
 
@@ -208,8 +280,10 @@ export default function Adress() {
                             <Text style={styles.label}>Nome do Endereço *</Text>
                             <TextInput
                                 style={styles.input}
-                                value={formData.name}
-                                onChangeText={(text) => setFormData({...formData, name: text})}
+                                value={formData.nome}
+                                onChangeText={(text) =>
+                                    setFormData({ ...formData, nome: text })
+                                }
                                 placeholder="Ex: Casa, Trabalho"
                                 placeholderTextColor="#999"
                             />
@@ -218,7 +292,9 @@ export default function Adress() {
                             <TextInput
                                 style={styles.input}
                                 value={formData.cep}
-                                onChangeText={(text) => setFormData({...formData, cep: text})}
+                                onChangeText={(text) =>
+                                    setFormData({ ...formData, cep: text })
+                                }
                                 placeholder="00000000"
                                 placeholderTextColor="#999"
                                 keyboardType="numeric"
@@ -228,7 +304,9 @@ export default function Adress() {
                             <TextInput
                                 style={styles.input}
                                 value={formData.rua}
-                                onChangeText={(text) => setFormData({...formData, rua: text})}
+                                onChangeText={(text) =>
+                                    setFormData({ ...formData, rua: text })
+                                }
                                 placeholder="Nome da rua"
                                 placeholderTextColor="#999"
                             />
@@ -237,7 +315,9 @@ export default function Adress() {
                             <TextInput
                                 style={styles.input}
                                 value={formData.numero}
-                                onChangeText={(text) => setFormData({...formData, numero: text})}
+                                onChangeText={(text) =>
+                                    setFormData({ ...formData, numero: text })
+                                }
                                 placeholder="000"
                                 placeholderTextColor="#999"
                                 keyboardType="numeric"
@@ -247,7 +327,9 @@ export default function Adress() {
                             <TextInput
                                 style={styles.input}
                                 value={formData.bairro}
-                                onChangeText={(text) => setFormData({...formData, bairro: text})}
+                                onChangeText={(text) =>
+                                    setFormData({ ...formData, bairro: text })
+                                }
                                 placeholder="Nome do bairro"
                                 placeholderTextColor="#999"
                             />
@@ -256,7 +338,9 @@ export default function Adress() {
                             <TextInput
                                 style={styles.input}
                                 value={formData.cidade}
-                                onChangeText={(text) => setFormData({...formData, cidade: text})}
+                                onChangeText={(text) =>
+                                    setFormData({ ...formData, cidade: text })
+                                }
                                 placeholder="Nome da cidade"
                                 placeholderTextColor="#999"
                             />
@@ -265,7 +349,9 @@ export default function Adress() {
                             <TextInput
                                 style={styles.input}
                                 value={formData.estado}
-                                onChangeText={(text) => setFormData({...formData, estado: text})}
+                                onChangeText={(text) =>
+                                    setFormData({ ...formData, estado: text })
+                                }
                                 placeholder="SP"
                                 placeholderTextColor="#999"
                                 maxLength={2}
@@ -273,17 +359,22 @@ export default function Adress() {
                         </ScrollView>
 
                         <View style={styles.modalButtons}>
-                            <TouchableOpacity 
-                                style={[styles.modalButton, styles.cancelButton]}
+                            <TouchableOpacity
+                                style={[
+                                    styles.modalButton,
+                                    styles.cancelButton,
+                                ]}
                                 onPress={() => {
                                     setModalVisible(false);
                                     resetForm();
                                 }}
                             >
-                                <Text style={styles.modalButtonText}>Cancelar</Text>
+                                <Text style={styles.modalButtonText}>
+                                    Cancelar
+                                </Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity 
+                            <TouchableOpacity
                                 style={[styles.modalButton, styles.saveButton]}
                                 onPress={handleSave}
                             >

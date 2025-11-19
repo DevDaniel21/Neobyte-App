@@ -2,7 +2,7 @@ import { View, StyleSheet, Text, Pressable } from 'react-native';
 
 export default function CardFavorite({
     id,
-    name,
+    nome,
     cep,
     numero,
     rua,
@@ -13,7 +13,7 @@ export default function CardFavorite({
 }) {
     return (
         <View style={styles.card_container}>
-            <Text style={styles.card_name}>{name}</Text>
+            <Text style={styles.card_name}>{nome}</Text>
             <Text style={styles.card_text}>{`${rua}, ${bairro}`}</Text>
             <Text style={styles.card_text}>{`Número: ${numero}`}</Text>
             <Text
