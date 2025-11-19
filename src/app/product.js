@@ -71,7 +71,9 @@ export default function ProductDetails() {
 
         if (cartList.length !== 0) {
             console.log('Carrinho não está vazio: ', cartList);
-            const isInCart = cartList.some((item) => item.produto_id === +params.id);
+            const isInCart = cartList.some(
+                (item) => item.produto_id === +params.id
+            );
             console.log('Está no carrinho? ', isInCart);
             setcanAddToCart(!isInCart);
         } else {
@@ -209,50 +211,24 @@ export default function ProductDetails() {
     };
 
     const handleDeleteComment = async (commentId) => {
-        Alert.alert(
-            'Confirmar exclusão',
-            'Tem certeza que deseja excluir este comentário?',
-            [
-                {
-                    text: 'Cancelar',
-                    style: 'cancel',
-                },
-                {
-                    text: 'Excluir',
-                    style: 'destructive',
-                    onPress: async () => {
-                        try {
-                            const response = await fetch(
-                                `http://localhost:4000/comment/${commentId}`,
-                                {
-                                    method: 'DELETE',
-                                }
-                            );
+        console.log(commentId, ' ', user_id)
+        const response = await fetch(`http://localhost:4000/comment`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: +commentId,
+                user_id: +user_id,
+            }),
+        });
 
-                            if (response.ok) {
-                                console.log('Comentário excluído com sucesso!');
-                                setComments(
-                                    comments.filter(
-                                        (comment) => comment.id !== commentId
-                                    )
-                                );
-                            } else {
-                                Alert.alert(
-                                    'Erro',
-                                    'Não foi possível excluir o comentário.'
-                                );
-                            }
-                        } catch (error) {
-                            console.error('Erro ao excluir comentário:', error);
-                            Alert.alert(
-                                'Erro',
-                                'Não foi possível excluir o comentário.'
-                            );
-                        }
-                    },
-                },
-            ]
-        );
+        if (response.ok) {
+            const commentData = await response.json();
+            const commentDelete = commentData.comment;
+            console.log('Comentário deletado')
+            setComments(comments.filter((comentario) => comentario.id !== commentDelete.id))
+        }
     };
 
     const handleAddToCart = async () => {
@@ -499,14 +475,20 @@ export default function ProductDetails() {
                 {/* Botões de ação */}
                 <View style={styles.actionsContainer}>
                     <Pressable
-                        style={[styles.actionButton, styles.cartButton, !canAddToCart && styles.cartButtonDisabled]}
+                        style={[
+                            styles.actionButton,
+                            styles.cartButton,
+                            !canAddToCart && styles.cartButtonDisabled,
+                        ]}
                         android_ripple={{ color: '#555' }}
                         onPress={handleAddToCart}
                         disabled={!canAddToCart}
                     >
                         <FontAwesome name="cart-plus" size={20} color="#fff" />
                         <Text style={styles.buttonText}>
-                            {canAddToCart ? 'Adicionar ao carrinho' : 'Já está no carrinho'}
+                            {canAddToCart
+                                ? 'Adicionar ao carrinho'
+                                : 'Já está no carrinho'}
                         </Text>
                     </Pressable>
                 </View>
