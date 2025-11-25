@@ -102,13 +102,6 @@ export default function EditUser() {
                     onChangeText={setEmail}
                 />
 
-                <Text style={styles.label}>Data de Nascimento</Text>
-                <TextInput
-                    style={styles.input}
-                    value={nasc}
-                    onChangeText={setNasc}
-                />
-
                 <Text style={styles.label}>Telefone</Text>
                 <TextInput
                     style={styles.input}

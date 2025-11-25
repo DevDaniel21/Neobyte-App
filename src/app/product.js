@@ -70,11 +70,9 @@ export default function ProductDetails() {
         const cartList = cartData.produtoAdicionado;
 
         if (cartList.length !== 0) {
-            console.log('Carrinho não está vazio: ', cartList);
             const isInCart = cartList.some(
                 (item) => item.produto_id === +params.id
             );
-            console.log('Está no carrinho? ', isInCart);
             setcanAddToCart(!isInCart);
         } else {
             setcanAddToCart(true);
@@ -188,7 +186,6 @@ export default function ProductDetails() {
             });
 
             if (response.ok) {
-                console.log('Criado com sucesso!');
                 const commentData = await response.json();
                 setComments([
                     ...comments,
@@ -211,23 +208,21 @@ export default function ProductDetails() {
     };
 
     const handleDeleteComment = async (commentId) => {
-        console.log(commentId, ' ', user_id)
-        const response = await fetch(`http://localhost:4000/comment`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                id: +commentId,
-                user_id: +user_id,
-            }),
-        });
+        const response = await fetch(
+            `http://localhost:4000/comment/${commentId}`,
+            {
+                method: 'DELETE',
+            }
+        );
 
         if (response.ok) {
             const commentData = await response.json();
             const commentDelete = commentData.comment;
-            console.log('Comentário deletado')
-            setComments(comments.filter((comentario) => comentario.id !== commentDelete.id))
+            setComments(
+                comments.filter(
+                    (comentario) => comentario.id !== commentDelete.id
+                )
+            );
         }
     };
 
@@ -248,17 +243,12 @@ export default function ProductDetails() {
             if (response.ok) {
                 const cartData = await response.json();
                 const produtoAdicionado = cartData.produtoAdicionado;
-                console.log('Adicionado ao carrinho com sucesso!');
 
                 if (cart.length === 0) {
                     setCart([produtoAdicionado]);
                 } else {
                     setCart([...cart, produtoAdicionado]);
                 }
-                console.log(
-                    'Negado de adicionar ao carrinho de novo: ',
-                    canAddToCart
-                );
                 setcanAddToCart(false);
             }
         } catch (error) {
