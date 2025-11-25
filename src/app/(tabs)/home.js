@@ -39,7 +39,7 @@ export default function Home() {
                             id={item.id}
                             nome={item.nome}
                             valor={item.valor}
-                            imagem={item.imagem}
+                            imagem={item.capa}
                         />
                     )}
                 />

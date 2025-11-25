@@ -44,9 +44,7 @@ export default function CardFavorite({ id, nome, valor, capa }) {
                 <Image
                     style={styles.card_image}
                     contentFit="fill"
-                    source={
-                        'https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/g/5/g5090-32v3c1.jpg'
-                    }
+                    source={capa}
                 />
             </View>
             <Text style={styles.card_name}>{nome}</Text>

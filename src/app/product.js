@@ -244,6 +244,13 @@ export default function ProductDetails() {
                 const cartData = await response.json();
                 const produtoAdicionado = cartData.produtoAdicionado;
 
+                produtoAdicionado.produto = {
+                    id: productData.id,
+                    nome: productData.name,
+                    valor: productData.price,
+                    capa: productData.image,
+                };
+
                 if (cart.length === 0) {
                     setCart([produtoAdicionado]);
                 } else {

@@ -2,20 +2,21 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function CartCard({ product, onRemove, onUpdateQuantity }) {
+    console.log(product)
     const handleDecrease = () => {
         if (product.quantidade > 1) {
-            onUpdateQuantity(product.id, product.quantidade - 1);
+            onUpdateQuantity(product.user_id, product.produto_id, product.quantidade - 1);
         }
     };
 
     const handleIncrease = () => {
-        onUpdateQuantity(product.id, product.quantity + 1);
+        onUpdateQuantity(product.user_id, product.produto_id, product.quantidade + 1);
     };
 
     return (
         <View style={styles.card}>
             <Image 
-                source={{ uri: product.produto.capa }} 
+                source={product.produto.capa} 
                 style={styles.image}
                 resizeMode="cover"
             />
@@ -52,8 +53,9 @@ export default function CartCard({ product, onRemove, onUpdateQuantity }) {
                     
                     <TouchableOpacity 
                         style={styles.remove_button}
-                        onPress={() => onRemove(product.produto.id)}
+                        onPress={() => onRemove(product.user_id, product.produto_id)}
                     >
+
                         <Ionicons name="trash-outline" size={20} color="#ff4444" />
                     </TouchableOpacity>
                 </View>

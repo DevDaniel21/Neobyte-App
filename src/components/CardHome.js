@@ -3,9 +3,6 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 
 export default function CardHome({ id, nome, valor, imagem }) {
-    imagem =
-        'https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/g/5/g5090-32v3c1.jpg';
-
     const hadleProduct = async () => {
         router.push({
             pathname: '/product',
@@ -19,7 +16,7 @@ export default function CardHome({ id, nome, valor, imagem }) {
                 <View style={styles.card_container}>
                     <Image
                         style={styles.card_image}
-                        source="https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/g/5/g5090-32v3c1.jpg"
+                        source={imagem}
                     />
                     <Text style={styles.descricao_card}>{nome}</Text>
                     <Text style={styles.descricao_preco}>R$: {valor}</Text>
