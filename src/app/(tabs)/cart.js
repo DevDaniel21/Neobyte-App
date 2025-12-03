@@ -42,12 +42,9 @@ export default function Cart() {
                 );
 
                 const data = await response.json();
-                if (response.ok && cart.length === 0) {
+                if (response.ok) {
                     setCart(data.produtoAdicionado);
                     setCartItems(data.produtoAdicionado);
-                } else if (cart.length !== 0) {
-                    setCart([...cart, ...data.produtoAdicionado]);
-                    setCartItems([...cart, ...data.produtoAdicionado]);
                 } else {
                     console.log('Erro ao carregar carrinho');
                 }

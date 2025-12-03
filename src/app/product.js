@@ -74,8 +74,10 @@ export default function ProductDetails() {
                 (item) => item.produto_id === +params.id
             );
             setcanAddToCart(!isInCart);
+            setCart(cartList);
         } else {
             setcanAddToCart(true);
+            setCart(cartList);
         }
     };
 
@@ -243,13 +245,6 @@ export default function ProductDetails() {
             if (response.ok) {
                 const cartData = await response.json();
                 const produtoAdicionado = cartData.produtoAdicionado;
-
-                produtoAdicionado.produto = {
-                    id: productData.id,
-                    nome: productData.name,
-                    valor: productData.price,
-                    capa: productData.image,
-                };
 
                 if (cart.length === 0) {
                     setCart([produtoAdicionado]);
